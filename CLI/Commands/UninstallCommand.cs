@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using AdbDriverInstaller.CLI.Infrastructure;
 using AdbDriverInstaller.CLI.Localization;
 using AdbDriverInstaller.Core.Interfaces;
 using Spectre.Console;
@@ -28,17 +29,23 @@ public sealed class UninstallCommand(
         }
         catch (UnauthorizedAccessException ex)
         {
-            AnsiConsole.MarkupLine($"[red]{S["PermissionError"]}:[/] {Markup.Escape(ex.Message)}");
+            RenderError(S["PermissionError"], ex.Message);
+            var logPath = CrashLogger.WriteLog(ex, "uninstall");
+            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
         catch (IOException ex)
         {
-            AnsiConsole.MarkupLine($"[red]{S["FileSystemError"]}:[/] {Markup.Escape(ex.Message)}");
+            RenderError(S["FileSystemError"], ex.Message);
+            var logPath = CrashLogger.WriteLog(ex, "uninstall");
+            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]{S["UnexpectedError"]}:[/] {Markup.Escape(ex.Message)}");
+            RenderError(S["UnexpectedError"], ex.Message);
+            var logPath = CrashLogger.WriteLog(ex, "uninstall");
+            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
     }
@@ -47,22 +54,26 @@ public sealed class UninstallCommand(
     {
         var installPath = settings.InstallPath ?? platformDetector.GetDefaultInstallPath();
 
-        AnsiConsole.Write(new Rule($"[bold red]{S["UninstallTitle"]}[/]").LeftJustified());
+        AnsiConsole.Write(new Rule($"[bold red]ADB Uninstall[/]").LeftJustified().RuleStyle("grey"));
+        AnsiConsole.MarkupLine($"  [dim]{S["UninstallTitle"]}[/]");
         AnsiConsole.WriteLine();
 
         if (!Directory.Exists(installPath))
         {
-            AnsiConsole.MarkupLine($"[yellow]{S["InstallNotFoundAt"]}[/] [cyan]{Markup.Escape(installPath)}[/]");
+            AnsiConsole.MarkupLine($"  [yellow]{S["InstallNotFoundAt"]}[/] [cyan]{Markup.Escape(installPath)}[/]");
             return 0;
         }
 
-        AnsiConsole.MarkupLine($"[bold]{S["ThisWillRemove"]}[/] [cyan]{Markup.Escape(installPath)}[/]");
+        AnsiConsole.MarkupLine($"  [bold]{S["ThisWillRemove"]}[/] [cyan]{Markup.Escape(installPath)}[/]");
+        AnsiConsole.WriteLine();
 
-        if (!AnsiConsole.Confirm(S["ConfirmUninstall"], defaultValue: false))
+        if (!AnsiConsole.Confirm($"  {S["ConfirmUninstall"]}", defaultValue: false))
         {
-            AnsiConsole.MarkupLine($"[yellow]{S["UninstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"  [yellow]{S["UninstallCancelled"]}[/]");
             return 0;
         }
+
+        AnsiConsole.WriteLine();
 
         await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
@@ -75,14 +86,26 @@ public sealed class UninstallCommand(
                 await Task.CompletedTask;
             });
 
-        AnsiConsole.MarkupLine($"[green]{S["RemovedSuccess"]}[/]");
+        AnsiConsole.MarkupLine($"  [green]{S["RemovedSuccess"]}[/]");
 
         if (environmentConfigurer.IsInPath(installPath))
         {
-            AnsiConsole.MarkupLine($"[yellow]{S["PathStillReferences"]}[/]");
-            AnsiConsole.MarkupLine($"[yellow]{S["ManuallyRemovePath"]}[/]");
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"  [yellow]{S["PathStillReferences"]}[/]");
+            AnsiConsole.MarkupLine($"  [yellow]{S["ManuallyRemovePath"]}[/]");
         }
 
         return 0;
+    }
+
+    private static void RenderError(string title, string detail)
+    {
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(detail)}[/]"))
+            .Header($"[red bold] {Markup.Escape(title)} [/]")
+            .Border(BoxBorder.Rounded)
+            .BorderColor(Color.Red)
+            .Padding(1, 0)
+            .Expand());
     }
 }

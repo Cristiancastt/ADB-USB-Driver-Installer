@@ -5,6 +5,7 @@ using AdbDriverInstaller.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 // Initialize localization (auto-detects system language)
@@ -48,4 +49,20 @@ app.Configure(config =>
 if (args.Length == 0)
     args = ["install"];
 
-return await app.RunAsync(args);
+try
+{
+    return await app.RunAsync(args);
+}
+catch (Exception ex)
+{
+    var logPath = CrashLogger.WriteLog(ex, string.Join(' ', args));
+    AnsiConsole.WriteLine();
+    AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(ex.Message)}[/]"))
+        .Header("[red bold] Fatal Error [/]")
+        .Border(BoxBorder.Rounded)
+        .BorderColor(Color.Red)
+        .Padding(1, 0)
+        .Expand());
+    AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+    return 1;
+}

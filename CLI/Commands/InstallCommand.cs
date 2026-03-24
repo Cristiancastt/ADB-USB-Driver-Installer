@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using AdbDriverInstaller.CLI.Infrastructure;
 using AdbDriverInstaller.CLI.Localization;
 using AdbDriverInstaller.Core.Enums;
 using AdbDriverInstaller.Core.Interfaces;
@@ -27,43 +28,51 @@ public sealed class InstallCommand(
         catch (OperationCanceledException)
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine($"[yellow]{S["InstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"  [yellow]{S["InstallCancelled"]}[/]");
             return 1;
         }
         catch (HttpRequestException ex)
         {
             RenderError(S["NetworkError"], GetNetworkErrorDetail(ex));
+            WriteCrashLog(ex);
             return 1;
         }
         catch (SocketException ex)
         {
             RenderError(S["NetworkError"], ex.Message);
+            WriteCrashLog(ex);
             return 1;
         }
         catch (UnauthorizedAccessException ex)
         {
             RenderError(S["PermissionError"], ex.Message);
+            WriteCrashLog(ex);
             return 1;
         }
         catch (IOException ex)
         {
             RenderError(S["FileSystemError"], ex.Message);
+            WriteCrashLog(ex);
             return 1;
         }
         catch (Exception ex)
         {
             RenderError(S["UnexpectedError"], ex.Message);
+            WriteCrashLog(ex);
             return 1;
         }
+    }
+
+    private static void WriteCrashLog(Exception ex)
+    {
+        var logPath = CrashLogger.WriteLog(ex, "install");
+        AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
     }
 
     private async Task<int> RunWizardAsync()
     {
         AnsiConsole.Clear();
-        AnsiConsole.Write(new FigletText("ADB Installer").Color(Color.Green));
-        AnsiConsole.Write(new Rule($"[bold grey]{S["AppSubtitle"]}[/]").LeftJustified());
-        AnsiConsole.MarkupLine($"[dim]{S.Format("LanguageDetected", S.LanguageName)}[/]");
-        AnsiConsole.WriteLine();
+        RenderHeader();
 
         // ── Step 1 — Platform Detection ─────────────────────────
         WriteStep(1, S["StepDetectingPlatform"]);
@@ -78,8 +87,8 @@ public sealed class InstallCommand(
         };
         var arch = RuntimeInformation.OSArchitecture.ToString();
 
-        var infoTable = new Table().Border(TableBorder.Rounded).BorderColor(Color.Teal);
-        infoTable.AddColumn(new TableColumn($"[bold]{S["Property"]}[/]").NoWrap());
+        var infoTable = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        infoTable.AddColumn(new TableColumn($"[bold]{S["Property"]}[/]").NoWrap().PadRight(2));
         infoTable.AddColumn($"[bold]{S["Value"]}[/]");
         infoTable.AddRow(S["OS"], $"[cyan]{osLabel}[/]");
         infoTable.AddRow(S["Architecture"], $"[cyan]{arch}[/]");
@@ -167,9 +176,9 @@ public sealed class InstallCommand(
         // ── Step 5 — Summary ────────────────────────────────────
         WriteStep(5, S["StepSummary"]);
 
-        var summary = new Table().Border(TableBorder.Heavy).BorderColor(Color.Green);
-        summary.AddColumn($"[bold]{S["Component"]}[/]");
-        summary.AddColumn($"[bold]{S["Action"]}[/]");
+        var summary = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        summary.AddColumn(new TableColumn($"[bold]{S["Component"]}[/]").PadRight(2));
+        summary.AddColumn(new TableColumn($"[bold]{S["Action"]}[/]"));
         summary.AddRow("Platform Tools", $"[green]{S["Install"]}[/]");
         summary.AddRow(S["InstallPath"], $"[cyan]{Markup.Escape(installPath)}[/]");
         summary.AddRow(S["Level"], installLevel == InstallLevel.System
@@ -340,19 +349,28 @@ public sealed class InstallCommand(
         }
     }
 
+    private static void RenderHeader()
+    {
+        AnsiConsole.Write(new Rule($"[bold green]ADB Driver Installer[/]").LeftJustified().RuleStyle("green"));
+        AnsiConsole.MarkupLine($"  [dim]{S["AppSubtitle"]}[/]");
+        AnsiConsole.MarkupLine($"  [dim]{S.Format("LanguageDetected", S.LanguageName)}[/]");
+        AnsiConsole.WriteLine();
+    }
+
     private static void WriteStep(int step, string title)
     {
-        AnsiConsole.Write(new Rule($"[bold yellow]{S.Format("Step", step)}[/] — [bold]{title}[/]").LeftJustified());
+        AnsiConsole.Write(new Rule($"[bold dodgerblue1][[{step}]][/] [white]{title}[/]").LeftJustified().RuleStyle("grey"));
         AnsiConsole.WriteLine();
     }
 
     private static void RenderError(string title, string detail)
     {
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Panel($"[red]{Markup.Escape(detail)}[/]")
+        AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(detail)}[/]"))
             .Header($"[red bold] {Markup.Escape(title)} [/]")
-            .Border(BoxBorder.Heavy)
+            .Border(BoxBorder.Rounded)
             .BorderColor(Color.Red)
+            .Padding(1, 0)
             .Expand());
     }
 
@@ -367,27 +385,27 @@ public sealed class InstallCommand(
 
     private static void RenderSuccessPanel(InstallResult result)
     {
-        var tree = new Tree($"[green bold]{S["InstallSuccessful"]}[/]");
+        var grid = new Grid();
+        grid.AddColumn(new GridColumn().PadRight(2));
+        grid.AddColumn();
 
-        var detailsNode = tree.AddNode($"[bold]{S["Details"]}[/]");
-        detailsNode.AddNode($"[dim]{S["Path"]}:[/]  [cyan]{Markup.Escape(result.PlatformToolsPath ?? "—")}[/]");
-
+        grid.AddRow("[dim]Path:[/]", $"[cyan]{Markup.Escape(result.PlatformToolsPath ?? "—")}[/]");
         if (result.AdbVersion is not null)
-            detailsNode.AddNode($"[dim]ADB:[/]   [green]{Markup.Escape(result.AdbVersion)}[/]");
+            grid.AddRow("[dim]ADB:[/]", $"[green]{Markup.Escape(result.AdbVersion)}[/]");
         if (result.FastbootVersion is not null)
-            detailsNode.AddNode($"[dim]Fastboot:[/] [green]{Markup.Escape(result.FastbootVersion)}[/]");
-
-        var statusNode = tree.AddNode($"[bold]{S["Status"]}[/]");
-        statusNode.AddNode(result.PathConfigured
+            grid.AddRow("[dim]Fastboot:[/]", $"[green]{Markup.Escape(result.FastbootVersion)}[/]");
+        grid.AddRow("[dim]PATH:[/]", result.PathConfigured
             ? $"[green]{S["AddedToPath"]}[/]"
             : $"[grey]{S["PathNotModified"]}[/]");
-        statusNode.AddNode(result.UsbDriversInstalled
+        grid.AddRow("[dim]USB Drivers:[/]", result.UsbDriversInstalled
             ? $"[green]{S["UsbDriversInstalled"]}[/]"
             : $"[grey]{S["UsbDriversSkipped"]}[/]");
 
-        AnsiConsole.Write(new Panel(tree)
-            .Border(BoxBorder.Double)
+        AnsiConsole.Write(new Panel(grid)
+            .Header($"[green bold] {S["InstallSuccessful"]} [/]")
+            .Border(BoxBorder.Rounded)
             .BorderColor(Color.Green)
+            .Padding(1, 0)
             .Expand());
     }
 
