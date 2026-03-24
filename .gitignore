@@ -1,0 +1,29 @@
+## .NET
+bin/
+obj/
+artifacts/
+dist/
+out/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## NuGet
+*.nupkg
+packages/
+
+## IDE
+.vs/
+.vscode/
+*.swp
+*~
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## Logs
+*.log

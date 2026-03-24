@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <data name="AppSubtitle" xml:space="preserve"><value>Android Debug Bridge &amp; Fastboot — Instalador Automático</value></data>
+  <data name="LanguageDetected" xml:space="preserve"><value>Idioma detectado: {0}</value></data>
+
+  <data name="Step" xml:space="preserve"><value>Paso {0}</value></data>
+  <data name="StepDetectingPlatform" xml:space="preserve"><value>Detectando plataforma</value></data>
+  <data name="StepSelectComponents" xml:space="preserve"><value>Seleccionar componentes</value></data>
+  <data name="StepInstallLevel" xml:space="preserve"><value>Nivel de instalación</value></data>
+  <data name="StepInstallPath" xml:space="preserve"><value>Ruta de instalación</value></data>
+  <data name="StepSummary" xml:space="preserve"><value>Resumen de instalación</value></data>
+  <data name="StepInstalling" xml:space="preserve"><value>Instalando</value></data>
+  <data name="StepComplete" xml:space="preserve"><value>Instalación completada</value></data>
+  <data name="StepPostInstall" xml:space="preserve"><value>Opciones post-instalación</value></data>
+
+  <data name="Property" xml:space="preserve"><value>Propiedad</value></data>
+  <data name="Value" xml:space="preserve"><value>Valor</value></data>
+  <data name="OS" xml:space="preserve"><value>SO</value></data>
+  <data name="Architecture" xml:space="preserve"><value>Arquitectura</value></data>
+  <data name="PlatformToolsUrl" xml:space="preserve"><value>URL Platform Tools</value></data>
+  <data name="UsbDriverUrl" xml:space="preserve"><value>URL Driver USB</value></data>
+  <data name="DefaultInstallPath" xml:space="preserve"><value>Ruta de instalación por defecto</value></data>
+
+  <data name="WhatToInstall" xml:space="preserve"><value>¿Qué deseas instalar?</value></data>
+  <data name="ComponentPlatformTools" xml:space="preserve"><value>ADB &amp; Fastboot (Platform Tools)</value></data>
+  <data name="ComponentAddToPath" xml:space="preserve"><value>Añadir al PATH</value></data>
+  <data name="ComponentUsbDrivers" xml:space="preserve"><value>Drivers USB (Google, solo Windows)</value></data>
+  <data name="ComponentVerify" xml:space="preserve"><value>Verificar instalación al terminar</value></data>
+  <data name="AllComponents" xml:space="preserve"><value>Todos los componentes</value></data>
+  <data name="MultiSelectInstructions" xml:space="preserve"><value>(Pulsa [blue]&lt;espacio&gt;[/] para alternar, [green]&lt;enter&gt;[/] para confirmar)</value></data>
+  <data name="PlatformToolsRequired" xml:space="preserve"><value>ADB &amp; Fastboot es obligatorio. Nada que hacer.</value></data>
+
+  <data name="ChooseInstallLevel" xml:space="preserve"><value>Elige el nivel de instalación:</value></data>
+  <data name="InstallLevelUser" xml:space="preserve"><value>Usuario — solo usuario actual (sin admin)</value></data>
+  <data name="InstallLevelSystem" xml:space="preserve"><value>Sistema — todos los usuarios (requiere admin/root)</value></data>
+  <data name="AdminRequired" xml:space="preserve"><value>La instalación a nivel de sistema requiere permisos de administrador.</value></data>
+
+  <data name="ConfirmInstallPath" xml:space="preserve"><value>¿Instalar en {0}?</value></data>
+  <data name="EnterCustomPath" xml:space="preserve"><value>Introduce la ruta de instalación personalizada:</value></data>
+  <data name="ParentDirNotExist" xml:space="preserve"><value>El directorio padre no existe</value></data>
+
+  <data name="Component" xml:space="preserve"><value>Componente</value></data>
+  <data name="Action" xml:space="preserve"><value>Acción</value></data>
+  <data name="Install" xml:space="preserve"><value>Instalar</value></data>
+  <data name="InstallPath" xml:space="preserve"><value>Ruta de instalación</value></data>
+  <data name="Level" xml:space="preserve"><value>Nivel</value></data>
+  <data name="UserLevel" xml:space="preserve"><value>Usuario</value></data>
+  <data name="SystemLevel" xml:space="preserve"><value>Sistema</value></data>
+  <data name="Yes" xml:space="preserve"><value>Sí</value></data>
+  <data name="No" xml:space="preserve"><value>No</value></data>
+  <data name="Skip" xml:space="preserve"><value>Omitir</value></data>
+  <data name="StartInstallation" xml:space="preserve"><value>¿Iniciar la instalación?</value></data>
+  <data name="InstallCancelled" xml:space="preserve"><value>Instalación cancelada por el usuario.</value></data>
+
+  <data name="DownloadingPlatformTools" xml:space="preserve"><value>Descargando Platform Tools</value></data>
+  <data name="ExtractingFiles" xml:space="preserve"><value>Extrayendo archivos</value></data>
+  <data name="DownloadingUsbDrivers" xml:space="preserve"><value>Descargando Drivers USB</value></data>
+  <data name="ExtractingUsbDrivers" xml:space="preserve"><value>Extrayendo Drivers USB</value></data>
+  <data name="InstallingUsbDrivers" xml:space="preserve"><value>Instalando Drivers USB (admin)</value></data>
+  <data name="ConfiguringPath" xml:space="preserve"><value>Configurando PATH</value></data>
+  <data name="VerifyingInstallation" xml:space="preserve"><value>Verificando instalación</value></data>
+
+  <data name="InstallSuccessful" xml:space="preserve"><value>✓ Instalación exitosa</value></data>
+  <data name="Details" xml:space="preserve"><value>Detalles</value></data>
+  <data name="Path" xml:space="preserve"><value>Ruta</value></data>
+  <data name="Status" xml:space="preserve"><value>Estado</value></data>
+  <data name="AddedToPath" xml:space="preserve"><value>✓ Añadido al PATH</value></data>
+  <data name="PathNotModified" xml:space="preserve"><value>— PATH no modificado</value></data>
+  <data name="UsbDriversInstalled" xml:space="preserve"><value>✓ Drivers USB instalados</value></data>
+  <data name="UsbDriversSkipped" xml:space="preserve"><value>— Drivers USB omitidos o N/A</value></data>
+  <data name="InstallFailed" xml:space="preserve"><value>Instalación fallida</value></data>
+  <data name="UnknownError" xml:space="preserve"><value>Error desconocido</value></data>
+
+  <data name="WhatToDoNow" xml:space="preserve"><value>¿Qué deseas hacer ahora?</value></data>
+  <data name="OpenNewTerminal" xml:space="preserve"><value>Abrir una nueva terminal (recomendado)</value></data>
+  <data name="RestartComputer" xml:space="preserve"><value>Reiniciar el equipo (aplicar todos los cambios)</value></data>
+  <data name="NothingExit" xml:space="preserve"><value>Nada, salir</value></data>
+  <data name="OpeningTerminal" xml:space="preserve"><value>Abriendo una nueva terminal...</value></data>
+  <data name="CouldNotOpenTerminal" xml:space="preserve"><value>No se pudo abrir la terminal automáticamente. Ábrela manualmente.</value></data>
+  <data name="SystemRestartIn" xml:space="preserve"><value>El sistema se reiniciará en 10 segundos...</value></data>
+  <data name="PressCancelRestart" xml:space="preserve"><value>Pulsa Ctrl+C para cancelar.</value></data>
+  <data name="CouldNotRestart" xml:space="preserve"><value>No se pudo reiniciar. Reinicia manualmente.</value></data>
+  <data name="DoneOpenTerminal" xml:space="preserve"><value>¡Listo! Abre una nueva terminal para que los cambios del PATH surtan efecto.</value></data>
+
+  <data name="VerificationTitle" xml:space="preserve"><value>Verificación de instalación de ADB</value></data>
+  <data name="ScanningAdb" xml:space="preserve"><value>Buscando ADB &amp; Fastboot...</value></data>
+  <data name="Found" xml:space="preserve"><value>✓ Encontrado</value></data>
+  <data name="NotFound" xml:space="preserve"><value>✗ No encontrado</value></data>
+  <data name="AccessibleGlobally" xml:space="preserve"><value>Accesible desde cualquier terminal</value></data>
+  <data name="OnlyInInstallDir" xml:space="preserve"><value>Solo en el directorio de instalación</value></data>
+  <data name="EverythingGood" xml:space="preserve"><value>¡Todo correcto! ADB y Fastboot están listos para usar.</value></data>
+  <data name="ComponentsMissing" xml:space="preserve"><value>Faltan algunos componentes. Ejecuta [bold]adb-installer install[/] para configurar.</value></data>
+  <data name="InPath" xml:space="preserve"><value>En PATH</value></data>
+
+  <data name="UninstallTitle" xml:space="preserve"><value>Desinstalar ADB Platform Tools</value></data>
+  <data name="InstallNotFoundAt" xml:space="preserve"><value>Instalación no encontrada en:</value></data>
+  <data name="ThisWillRemove" xml:space="preserve"><value>Esto eliminará:</value></data>
+  <data name="ConfirmUninstall" xml:space="preserve"><value>¿Seguro que deseas desinstalar?</value></data>
+  <data name="UninstallCancelled" xml:space="preserve"><value>Desinstalación cancelada.</value></data>
+  <data name="Removing" xml:space="preserve"><value>Eliminando platform-tools...</value></data>
+  <data name="RemovedSuccess" xml:space="preserve"><value>Platform tools eliminados correctamente.</value></data>
+  <data name="PathStillReferences" xml:space="preserve"><value>Nota: El PATH aún referencia el directorio eliminado.</value></data>
+  <data name="ManuallyRemovePath" xml:space="preserve"><value>Por favor, elimínalo manualmente de tu variable de entorno PATH.</value></data>
+
+  <!-- Error handling -->
+  <data name="NetworkError" xml:space="preserve"><value>Error de red — comprueba tu conexión a Internet</value></data>
+  <data name="PermissionError" xml:space="preserve"><value>Permiso denegado — intenta ejecutar como administrador</value></data>
+  <data name="FileSystemError" xml:space="preserve"><value>Error del sistema de archivos</value></data>
+  <data name="UnexpectedError" xml:space="preserve"><value>Ha ocurrido un error inesperado</value></data>
+</root>

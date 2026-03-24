@@ -1,0 +1,118 @@
+# ──────────────────────────────────────────────────────────────────
+# Release workflow — triggered by pushing a semver tag (e.g. v1.2.3)
+#
+# Builds self-contained binaries for 5 targets, generates build
+# provenance (buildinfo.json), computes SHA-256 checksums, signs
+# them with GPG, and publishes a GitHub Release.
+#
+# Required repository secrets:
+#   GPG_PRIVATE_KEY  — ASCII-armored private key
+#                      (gpg --export-secret-keys --armor YOUR_KEY_ID)
+#   GPG_PASSPHRASE   — Passphrase for that key (set to "" if none)
+#
+# First release:
+#   git tag -a v1.0.0 -m "v1.0.0"
+#   git push origin v1.0.0
+# ──────────────────────────────────────────────────────────────────
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+
+jobs:
+  # ── Build matrix ──────────────────────────────────────────────
+  build:
+    name: Build ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - { rid: win-x64,      os: windows-latest }
+          - { rid: linux-x64,    os: ubuntu-latest  }
+          - { rid: linux-arm64,  os: ubuntu-latest  }
+          - { rid: osx-x64,     os: macos-13        }
+          - { rid: osx-arm64,    os: macos-latest    }
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          dotnet-quality: "preview"
+
+      - name: Install jq (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: choco install jq -y --no-progress
+
+      - name: Restore
+        run: dotnet restore CLI/CLI.csproj --runtime ${{ matrix.rid }}
+
+      - name: Build
+        shell: bash
+        run: bash scripts/build.sh "${{ matrix.rid }}" "${GITHUB_REF_NAME#v}"
+
+      - name: Generate build provenance
+        shell: bash
+        run: bash scripts/buildinfo.sh "${{ matrix.rid }}" "${GITHUB_REF_NAME#v}"
+
+      - name: Package
+        shell: bash
+        run: bash scripts/package.sh "${{ matrix.rid }}" "${GITHUB_REF_NAME#v}"
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.rid }}
+          path: dist/*
+          retention-days: 1
+
+  # ── Sign, checksum, publish ───────────────────────────────────
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: dist-*
+          merge-multiple: true
+
+      - name: Compute SHA-256 checksums
+        run: bash scripts/checksums.sh dist
+
+      - name: GPG sign checksums
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: bash scripts/sign.sh dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/*.zip
+            dist/*.tar.gz
+            dist/*.buildinfo.json
+            dist/SHA256SUMS
+            dist/SHA256SUMS.asc

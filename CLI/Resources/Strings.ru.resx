@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <data name="AppSubtitle" xml:space="preserve"><value>Android Debug Bridge &amp; Fastboot — Автоматический установщик</value></data>
+  <data name="LanguageDetected" xml:space="preserve"><value>Определён язык: {0}</value></data>
+
+  <data name="Step" xml:space="preserve"><value>Шаг {0}</value></data>
+  <data name="StepDetectingPlatform" xml:space="preserve"><value>Определение платформы</value></data>
+  <data name="StepSelectComponents" xml:space="preserve"><value>Выбор компонентов</value></data>
+  <data name="StepInstallLevel" xml:space="preserve"><value>Уровень установки</value></data>
+  <data name="StepInstallPath" xml:space="preserve"><value>Путь установки</value></data>
+  <data name="StepSummary" xml:space="preserve"><value>Сводка установки</value></data>
+  <data name="StepInstalling" xml:space="preserve"><value>Установка</value></data>
+  <data name="StepComplete" xml:space="preserve"><value>Установка завершена</value></data>
+  <data name="StepPostInstall" xml:space="preserve"><value>Действия после установки</value></data>
+
+  <data name="Property" xml:space="preserve"><value>Свойство</value></data>
+  <data name="Value" xml:space="preserve"><value>Значение</value></data>
+  <data name="OS" xml:space="preserve"><value>ОС</value></data>
+  <data name="Architecture" xml:space="preserve"><value>Архитектура</value></data>
+  <data name="PlatformToolsUrl" xml:space="preserve"><value>URL Platform Tools</value></data>
+  <data name="UsbDriverUrl" xml:space="preserve"><value>URL USB-драйвера</value></data>
+  <data name="DefaultInstallPath" xml:space="preserve"><value>Путь установки по умолчанию</value></data>
+
+  <data name="WhatToInstall" xml:space="preserve"><value>Что вы хотите установить?</value></data>
+  <data name="ComponentPlatformTools" xml:space="preserve"><value>ADB &amp; Fastboot (Platform Tools)</value></data>
+  <data name="ComponentAddToPath" xml:space="preserve"><value>Добавить в PATH</value></data>
+  <data name="ComponentUsbDrivers" xml:space="preserve"><value>USB-драйверы (Google, только Windows)</value></data>
+  <data name="ComponentVerify" xml:space="preserve"><value>Проверить установку после завершения</value></data>
+  <data name="AllComponents" xml:space="preserve"><value>Все компоненты</value></data>
+  <data name="MultiSelectInstructions" xml:space="preserve"><value>(Нажмите [blue]&lt;пробел&gt;[/] для переключения, [green]&lt;enter&gt;[/] для подтверждения)</value></data>
+  <data name="PlatformToolsRequired" xml:space="preserve"><value>ADB &amp; Fastboot обязателен. Нечего делать.</value></data>
+
+  <data name="ChooseInstallLevel" xml:space="preserve"><value>Выберите уровень установки:</value></data>
+  <data name="InstallLevelUser" xml:space="preserve"><value>Пользователь — только текущий (без прав администратора)</value></data>
+  <data name="InstallLevelSystem" xml:space="preserve"><value>Система — для всех пользователей (требуются права администратора)</value></data>
+  <data name="AdminRequired" xml:space="preserve"><value>Системная установка требует прав администратора.</value></data>
+
+  <data name="ConfirmInstallPath" xml:space="preserve"><value>Установить в {0}?</value></data>
+  <data name="EnterCustomPath" xml:space="preserve"><value>Введите путь установки:</value></data>
+  <data name="ParentDirNotExist" xml:space="preserve"><value>Родительская директория не существует</value></data>
+
+  <data name="Component" xml:space="preserve"><value>Компонент</value></data>
+  <data name="Action" xml:space="preserve"><value>Действие</value></data>
+  <data name="Install" xml:space="preserve"><value>Установить</value></data>
+  <data name="InstallPath" xml:space="preserve"><value>Путь установки</value></data>
+  <data name="Level" xml:space="preserve"><value>Уровень</value></data>
+  <data name="UserLevel" xml:space="preserve"><value>Пользователь</value></data>
+  <data name="SystemLevel" xml:space="preserve"><value>Система</value></data>
+  <data name="Yes" xml:space="preserve"><value>Да</value></data>
+  <data name="No" xml:space="preserve"><value>Нет</value></data>
+  <data name="Skip" xml:space="preserve"><value>Пропустить</value></data>
+  <data name="StartInstallation" xml:space="preserve"><value>Начать установку?</value></data>
+  <data name="InstallCancelled" xml:space="preserve"><value>Установка отменена пользователем.</value></data>
+
+  <data name="DownloadingPlatformTools" xml:space="preserve"><value>Загрузка Platform Tools</value></data>
+  <data name="ExtractingFiles" xml:space="preserve"><value>Извлечение файлов</value></data>
+  <data name="DownloadingUsbDrivers" xml:space="preserve"><value>Загрузка USB-драйверов</value></data>
+  <data name="ExtractingUsbDrivers" xml:space="preserve"><value>Извлечение USB-драйверов</value></data>
+  <data name="InstallingUsbDrivers" xml:space="preserve"><value>Установка USB-драйверов (администратор)</value></data>
+  <data name="ConfiguringPath" xml:space="preserve"><value>Настройка PATH</value></data>
+  <data name="VerifyingInstallation" xml:space="preserve"><value>Проверка установки</value></data>
+
+  <data name="InstallSuccessful" xml:space="preserve"><value>✓ Установка успешна</value></data>
+  <data name="Details" xml:space="preserve"><value>Детали</value></data>
+  <data name="Path" xml:space="preserve"><value>Путь</value></data>
+  <data name="Status" xml:space="preserve"><value>Статус</value></data>
+  <data name="AddedToPath" xml:space="preserve"><value>✓ Добавлено в PATH</value></data>
+  <data name="PathNotModified" xml:space="preserve"><value>— PATH не изменён</value></data>
+  <data name="UsbDriversInstalled" xml:space="preserve"><value>✓ USB-драйверы установлены</value></data>
+  <data name="UsbDriversSkipped" xml:space="preserve"><value>— USB-драйверы пропущены или Н/Д</value></data>
+  <data name="InstallFailed" xml:space="preserve"><value>Ошибка установки</value></data>
+  <data name="UnknownError" xml:space="preserve"><value>Неизвестная ошибка</value></data>
+
+  <data name="WhatToDoNow" xml:space="preserve"><value>Что вы хотите сделать?</value></data>
+  <data name="OpenNewTerminal" xml:space="preserve"><value>Открыть новый терминал (рекомендуется)</value></data>
+  <data name="RestartComputer" xml:space="preserve"><value>Перезагрузить компьютер (применить все изменения)</value></data>
+  <data name="NothingExit" xml:space="preserve"><value>Ничего, выйти</value></data>
+  <data name="OpeningTerminal" xml:space="preserve"><value>Открытие нового терминала...</value></data>
+  <data name="CouldNotOpenTerminal" xml:space="preserve"><value>Не удалось открыть терминал автоматически. Откройте его вручную.</value></data>
+  <data name="SystemRestartIn" xml:space="preserve"><value>Система перезагрузится через 10 секунд...</value></data>
+  <data name="PressCancelRestart" xml:space="preserve"><value>Нажмите Ctrl+C для отмены.</value></data>
+  <data name="CouldNotRestart" xml:space="preserve"><value>Не удалось перезагрузить. Перезагрузите вручную.</value></data>
+  <data name="DoneOpenTerminal" xml:space="preserve"><value>Готово! Откройте новый терминал, чтобы изменения PATH вступили в силу.</value></data>
+
+  <data name="VerificationTitle" xml:space="preserve"><value>Проверка установки ADB</value></data>
+  <data name="ScanningAdb" xml:space="preserve"><value>Поиск ADB &amp; Fastboot...</value></data>
+  <data name="Found" xml:space="preserve"><value>✓ Найден</value></data>
+  <data name="NotFound" xml:space="preserve"><value>✗ Не найден</value></data>
+  <data name="AccessibleGlobally" xml:space="preserve"><value>Доступен из любого терминала</value></data>
+  <data name="OnlyInInstallDir" xml:space="preserve"><value>Только в каталоге установки</value></data>
+  <data name="EverythingGood" xml:space="preserve"><value>Всё в порядке! ADB и Fastboot готовы к использованию.</value></data>
+  <data name="ComponentsMissing" xml:space="preserve"><value>Некоторые компоненты отсутствуют. Выполните [bold]adb-installer install[/] для настройки.</value></data>
+  <data name="InPath" xml:space="preserve"><value>В PATH</value></data>
+
+  <data name="UninstallTitle" xml:space="preserve"><value>Удаление ADB Platform Tools</value></data>
+  <data name="InstallNotFoundAt" xml:space="preserve"><value>Установка не найдена по адресу:</value></data>
+  <data name="ThisWillRemove" xml:space="preserve"><value>Будет удалено:</value></data>
+  <data name="ConfirmUninstall" xml:space="preserve"><value>Вы уверены, что хотите удалить?</value></data>
+  <data name="UninstallCancelled" xml:space="preserve"><value>Удаление отменено.</value></data>
+  <data name="Removing" xml:space="preserve"><value>Удаление platform-tools...</value></data>
+  <data name="RemovedSuccess" xml:space="preserve"><value>Platform tools успешно удалены.</value></data>
+  <data name="PathStillReferences" xml:space="preserve"><value>Примечание: PATH всё ещё ссылается на удалённый каталог.</value></data>
+  <data name="ManuallyRemovePath" xml:space="preserve"><value>Удалите его вручную из переменной окружения PATH.</value></data>
+
+  <!-- Error handling -->
+  <data name="NetworkError" xml:space="preserve"><value>Ошибка сети — проверьте подключение к Интернету</value></data>
+  <data name="PermissionError" xml:space="preserve"><value>Доступ запрещён — запустите от имени администратора</value></data>
+  <data name="FileSystemError" xml:space="preserve"><value>Ошибка файловой системы</value></data>
+  <data name="UnexpectedError" xml:space="preserve"><value>Произошла непредвиденная ошибка</value></data>
+</root>
