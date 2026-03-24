@@ -1,6 +1,5 @@
 # ──────────────────────────────────────────────────────────────────
 # Release workflow — triggered by pushing a semver tag (e.g. v1.2.3)
-#
 # Builds self-contained binaries for 5 targets, generates build
 # provenance (buildinfo.json), computes SHA-256 checksums, signs
 # them with GPG, and publishes a GitHub Release.
