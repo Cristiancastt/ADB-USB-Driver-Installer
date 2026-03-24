@@ -10,9 +10,10 @@ using Spectre.Console.Cli;
 // Initialize localization (auto-detects system language)
 _ = new Localizer();
 
+using var settingsStream = typeof(Program).Assembly
+    .GetManifestResourceStream("AdbDriverInstaller.CLI.appsettings.json")!;
 var configuration = new ConfigurationBuilder()
-    .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddJsonStream(settingsStream)
     .Build();
 
 var services = new ServiceCollection();
