@@ -13,12 +13,14 @@ export default function CodeTabs({ tabs }: { tabs: Tab[] }) {
 
   return (
     <div>
-      <div className="inline-flex bg-gray-100 rounded-lg p-0.5 mb-3">
+      <div className="inline-flex bg-gray-100 rounded-lg p-0.5 mb-3" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={active === tab.id}
             onClick={() => setActive(tab.id)}
-            className={`tab-btn px-4 py-1.5 text-xs font-semibold rounded-md cursor-pointer transition-all ${
+            className={`tab-btn px-4 py-1.5 text-xs font-medium rounded-md cursor-pointer transition-colors ${
               active === tab.id ? 'active' : ''
             }`}
           >
@@ -27,7 +29,11 @@ export default function CodeTabs({ tabs }: { tabs: Tab[] }) {
         ))}
       </div>
       {tabs.map((tab) => (
-        <div key={tab.id} style={{ display: active === tab.id ? '' : 'none' }}>
+        <div
+          key={tab.id}
+          role="tabpanel"
+          hidden={active !== tab.id}
+        >
           {tab.content}
         </div>
       ))}

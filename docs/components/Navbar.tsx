@@ -7,33 +7,49 @@ import { GitHubIcon } from './icons/GitHubIcon';
 
 export default function Navbar() {
   const { t } = useTranslation();
-  const [shadow, setShadow] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    function onScroll() {
-      setShadow(window.scrollY > 10);
-    }
+    const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <nav
-      className="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 transition-shadow"
-      style={{ boxShadow: shadow ? '0 1px 12px rgba(0,0,0,.06)' : 'none' }}
+      role="navigation"
+      aria-label="Main navigation"
+      className={`fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-lg border-b transition-colors ${
+        scrolled ? 'border-gray-200/80' : 'border-transparent'
+      }`}
     >
-      <div className="max-w-5xl mx-auto px-5 sm:px-6 flex items-center justify-between h-14">
-        <a href="#top" className="flex items-center gap-2.5 font-bold text-gray-900 text-sm">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between h-14">
+        <a
+          href="#top"
+          className="flex items-center gap-2 font-semibold text-gray-900 text-[0.9375rem] tracking-tight"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/favicon.svg`} alt="" width={26} height={26} className="rounded-md" />
-          ADB/USB Latest Driver Installer
+          <img
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/favicon.svg`}
+            alt="ADB Driver Installer logo"
+            width={24}
+            height={24}
+            className="rounded"
+          />
+          <span className="hidden sm:inline">ADB Driver Installer</span>
         </a>
 
-        <div className="flex items-center gap-3 sm:gap-5">
-          <a href="#quickstart" className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a
+            href="#quickstart"
+            className="hidden sm:inline-block text-[0.8125rem] text-gray-500 hover:text-gray-900 transition-colors font-medium py-1.5 px-2"
+          >
             {t('navQuickStart')}
           </a>
-          <a href="#download" className="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+          <a
+            href="#download"
+            className="hidden sm:inline-block text-[0.8125rem] text-gray-500 hover:text-gray-900 transition-colors font-medium py-1.5 px-2"
+          >
             {t('navDownload')}
           </a>
 
@@ -41,12 +57,13 @@ export default function Navbar() {
 
           <a
             href="https://github.com/Cristiancastt/ADB-USB-Driver-Installer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:border-accent-300 hover:text-accent-600 hover:bg-accent-50 transition"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:border-gray-300 hover:text-gray-900 transition-colors"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="View on GitHub"
           >
             <GitHubIcon />
-            GitHub
+            <span className="hidden sm:inline">GitHub</span>
           </a>
         </div>
       </div>

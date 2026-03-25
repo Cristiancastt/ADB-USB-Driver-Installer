@@ -1,21 +1,13 @@
 import type { Metadata } from 'next';
-import { Sora, Newsreader } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { Geist_Mono } from 'next/font/google';
 import { I18nProvider } from '@/lib/i18n-context';
 import './globals.css';
 
-const sora = Sora({
+const inter = Inter({
   variable: '--font-sora',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
-
-const newsreader = Newsreader({
-  variable: '--font-newsreader',
-  subsets: ['latin'],
-  weight: ['400'],
-  style: ['normal', 'italic'],
   display: 'swap',
 });
 
@@ -91,14 +83,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sora.variable} ${newsreader.variable} ${geistMono.variable} scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} ${geistMono.variable} scroll-smooth`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-white text-gray-800 antialiased">
+      <body className="bg-white text-gray-900 antialiased selection:bg-accent-100 selection:text-accent-700">
+        <a href="#main" className="skip-link">Skip to content</a>
         <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
