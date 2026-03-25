@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>AdbDriverInstaller.CLI</RootNamespace>
     <AssemblyName>adb-installer</AssemblyName>
+    <ApplicationIcon Condition="Exists('Assets/icons/adb-installer.ico')">Assets/icons/adb-installer.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Assets/icons/**" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Assets/icons')" />
   </ItemGroup>
 
 </Project>

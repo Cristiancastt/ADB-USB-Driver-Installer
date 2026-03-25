@@ -449,7 +449,7 @@ public sealed class InstallCommand(
 
     private static void RenderHeader()
     {
-        AnsiConsole.Write(new Rule($"[bold green]ADB Driver Installer[/]").LeftJustified().RuleStyle("green"));
+        AnsiConsole.Write(new Rule($"[bold dodgerblue1]ADB/USB Latest Driver Installer[/]").LeftJustified().RuleStyle("dodgerblue1"));
         AnsiConsole.MarkupLine($"  [dim]{S["AppSubtitle"]}[/]");
         AnsiConsole.MarkupLine($"  [dim]{S.Format("LanguageDetected", S.LanguageName)}[/]");
         AnsiConsole.WriteLine();
