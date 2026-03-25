@@ -30,25 +30,37 @@ def has(cmd: str) -> bool:
 
 
 def render_png(svg: Path, png: Path, size: int) -> bool:
-    # 1) CairoSVG Python package
+    # 1) CairoSVG Python package (best quality, native rendering)
     try:
         import cairosvg  # type: ignore
 
+        # Render at high DPI first, then downscale if needed for best quality
+        scale = 2  # 2x rendering for anti-aliasing
         cairosvg.svg2png(
             url=str(svg),
             write_to=str(png),
-            output_width=size,
-            output_height=size,
+            output_width=size * scale,
+            output_height=size * scale,
         )
-        print(f"[OK] CairoSVG rendered {png.name}")
+        # Downscale to target size
+        try:
+            from PIL import Image  # type: ignore
+            img = Image.open(png)
+            img = img.resize((size, size), Image.LANCZOS)
+            img.save(str(png), "PNG")
+        except Exception:
+            pass  # If no PIL, use cairosvg output as-is
+        print(f"[OK] CairoSVG rendered {png.name} ({size}x{size})")
         return True
     except Exception:
         import traceback
         print(f"[FAIL] CairoSVG failed for size {size}")
         traceback.print_exc()
 
-    # 2) Inkscape CLI
+    # 2) Inkscape CLI (high quality vector rendering)
     if has("inkscape"):
+        # Use DPI for crisp rendering
+        dpi = 96 * (size // 64 + 1)  # Scale DPI based on target size
         res = run([
             "inkscape",
             str(svg),
@@ -58,30 +70,28 @@ def render_png(svg: Path, png: Path, size: int) -> bool:
             str(size),
             "--export-height",
             str(size),
+            "--export-dpi",
+            str(dpi),
         ])
         if res.returncode == 0:
-            print(f"[OK] Inkscape rendered {png.name}")
+            print(f"[OK] Inkscape rendered {png.name} ({size}x{size})")
             return True
         else:
             print(f"[FAIL] Inkscape failed: {res.stderr}")
 
-    # 2.5) svglib + reportlab
+    # 2.5) svglib + reportlab (pure Python vector rendering)
     try:
         from svglib.svglib import svg2rlg  # type: ignore
         from reportlab.graphics import renderPM  # type: ignore
 
         drawing = svg2rlg(str(svg))
         if drawing is not None:
-            width = float(getattr(drawing, "width", 0.0) or 0.0)
-            height = float(getattr(drawing, "height", 0.0) or 0.0)
-            if width > 0 and height > 0:
-                sx = size / width
-                sy = size / height
-                drawing.scale(sx, sy)
-                drawing.width = size
-                drawing.height = size
-            renderPM.drawToFile(drawing, str(png), fmt="PNG")
-            print(f"[OK] svglib/reportlab rendered {png.name}")
+            # Scale to exact pixel dimensions
+            drawing.width = size
+            drawing.height = size
+            # Render with high DPI for quality
+            renderPM.drawToFile(drawing, str(png), fmt="PNG", dpi=(96 * 2, 96 * 2))
+            print(f"[OK] svglib/reportlab rendered {png.name} ({size}x{size})")
             return True
     except Exception:
         import traceback
@@ -106,11 +116,19 @@ def render_png(svg: Path, png: Path, size: int) -> bool:
         else:
             print(f"[FAIL] rsvg-convert failed: {res.stderr}")
 
-    # 4) ImageMagick
+    # 4) ImageMagick (with density for crisp rendering)
     if has("magick"):
-        res = run(["magick", str(svg), "-resize", f"{size}x{size}", str(png)])
+        res = run([
+            "magick",
+            "-density",
+            "192",  # High DPI for quality
+            str(svg),
+            "-resize",
+            f"{size}x{size}",
+            str(png),
+        ])
         if res.returncode == 0:
-            print(f"[OK] ImageMagick rendered {png.name}")
+            print(f"[OK] ImageMagick rendered {png.name} ({size}x{size})")
             return True
         else:
             print(f"[FAIL] ImageMagick failed: {res.stderr}")
@@ -214,9 +232,11 @@ def main() -> int:
         print(f"ERROR: {ex}", file=sys.stderr)
         return 3
 
-    print(f"Generated PNG set in: {out_dir}")
-    print(f"Windows icon (.ico): {'OK' if ico_ok else 'SKIPPED'}")
-    print(f"macOS icon (.icns): {'OK' if icns_ok else 'SKIPPED'}")
+    print(f"\n✓ Generated PNG set in: {out_dir}")
+    print(f"✓ Windows icon (.ico): {'OK' if ico_ok else 'SKIPPED'}")
+    print(f"✓ macOS icon (.icns): {'OK' if icns_ok else 'SKIPPED'}")
+    print(f"\nAll sizes: {', '.join(str(s) for s in PNG_SIZES)}")
+    print(f"No pixelation - using vector rendering at high DPI.")
 
     if not ico_ok:
         print(

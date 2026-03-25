@@ -1,4 +1,5 @@
 # ADB Driver Installer
+![ADB Driver Installer](./CLI/Assets/icons/icon_128x128.png) 
 
 > One command to set up ADB, Fastboot, and USB drivers. No more manual downloads, PATH edits, or driver headaches. Just run the installer and follow the wizard.
 
