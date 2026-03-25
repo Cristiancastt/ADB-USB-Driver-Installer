@@ -31,12 +31,12 @@ export default function Navbar() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/favicon.svg`}
-            alt="ADB Driver Installer logo"
+            alt="ADB/USB Latest Driver Installer logo"
             width={24}
             height={24}
             className="rounded"
           />
-          <span className="hidden sm:inline">ADB Driver Installer</span>
+          <span className="hidden sm:inline">ADB/USB Latest Driver Installer</span>
         </a>
 
         <div className="flex items-center gap-2 sm:gap-4">

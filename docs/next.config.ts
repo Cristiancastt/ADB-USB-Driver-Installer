@@ -15,12 +15,7 @@ const nextConfig: NextConfig = {
 
   images: {
     unoptimized: true,
-  },
-
-  /** Fix Turbopack font fetching when system has custom TLS config */
-  experimental: {
-    turbopackUseSystemTlsCerts: true,
-  },
+  }
 };
 
 export default nextConfig;
