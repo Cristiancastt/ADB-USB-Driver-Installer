@@ -3,7 +3,7 @@ export default function Footer() {
     { href: 'https://github.com/Cristiancastt/ADB-USB-Driver-Installer', label: 'GitHub' },
     { href: 'https://github.com/Cristiancastt/ADB-USB-Driver-Installer/releases', label: 'Releases' },
     { href: 'https://github.com/Cristiancastt/ADB-USB-Driver-Installer/issues', label: 'Issues' },
-    { href: 'https://github.com/Cristiancastt/ADB-USB-Driver-Installer/blob/main/LICENSE', label: 'License' },
+    { href: 'https://github.com/Cristiancastt/ADB-USB-Driver-Installer/blob/master/LICENSE', label: 'License' },
   ];
 
   return (
