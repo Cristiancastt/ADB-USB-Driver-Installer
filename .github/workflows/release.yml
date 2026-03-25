@@ -29,7 +29,7 @@ jobs:
           - { rid: osx-arm64,    os: macos-latest   }
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -60,7 +60,7 @@ jobs:
         run: bash scripts/package.sh "${{ matrix.rid }}" "${GITHUB_REF_NAME#v}"
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist-${{ matrix.rid }}
           path: dist/*
@@ -71,7 +71,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
