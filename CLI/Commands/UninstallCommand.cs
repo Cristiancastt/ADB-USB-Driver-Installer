@@ -1,9 +1,9 @@
-using System.ComponentModel;
 using AdbDriverInstaller.CLI.Infrastructure;
 using AdbDriverInstaller.CLI.Localization;
 using AdbDriverInstaller.Core.Interfaces;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
 
 namespace AdbDriverInstaller.CLI.Commands;
 
@@ -54,7 +54,7 @@ public sealed class UninstallCommand(
     {
         var installPath = settings.InstallPath ?? platformDetector.GetDefaultInstallPath();
 
-        AnsiConsole.Write(new Rule($"[bold red]ADB Uninstall[/]").LeftJustified().RuleStyle("grey"));
+        AnsiConsole.Write(new Rule($"[bold red]{S["UninstallHeader"]}[/]").LeftJustified().RuleStyle("grey"));
         AnsiConsole.MarkupLine($"  [dim]{S["UninstallTitle"]}[/]");
         AnsiConsole.WriteLine();
 

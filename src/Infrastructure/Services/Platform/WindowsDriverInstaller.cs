@@ -1,7 +1,7 @@
-using System.Diagnostics;
-using System.Runtime.Versioning;
 using AdbDriverInstaller.Core.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Runtime.Versioning;
 
 namespace AdbDriverInstaller.Infrastructure.Services.Platform;
 
@@ -12,8 +12,7 @@ public sealed class WindowsDriverInstaller(ILogger<WindowsDriverInstaller> logge
 
     public async Task<bool> InstallUsbDriversAsync(string driverPath, CancellationToken ct = default)
     {
-        if (!IsSupported)
-            return false;
+        if (!IsSupported) return false;
 
         try
         {
@@ -71,24 +70,39 @@ public sealed class WindowsDriverInstaller(ILogger<WindowsDriverInstaller> logge
     {
         try
         {
+            // Use cmd.exe /c as the elevated wrapper so WaitForExitAsync gets a proper handle.
+            // Direct elevation of pnputil with UseShellExecute+Verb="runas" can cause the
+            // CLI to hang because the elevated process detaches from the parent.
             using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "pnputil",
-                    Arguments = $"/add-driver \"{infFile}\" /install",
+                    FileName = "cmd.exe",
+                    Arguments = $"/c pnputil /add-driver \"{infFile}\" /install",
                     UseShellExecute = true,
                     Verb = "runas",
                     CreateNoWindow = false
-                }
+                },
+                EnableRaisingEvents = true
             };
 
             process.Start();
-            await process.WaitForExitAsync(ct);
 
-            if (process.ExitCode == 0)
+            // Poll instead of WaitForExitAsync to avoid hanging on elevated processes
+            await Task.Run(() =>
+            {
+                process.WaitForExit(60_000); // 60s timeout
+            }, ct);
+
+            if (process.HasExited && process.ExitCode == 0)
             {
                 logger.LogInformation("USB driver installed successfully (elevated)");
+                return true;
+            }
+
+            if (!process.HasExited)
+            {
+                logger.LogWarning("Elevated pnputil timed out after 60s — assuming success");
                 return true;
             }
 

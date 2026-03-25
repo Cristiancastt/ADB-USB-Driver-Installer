@@ -1,7 +1,3 @@
-using System.Diagnostics;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using AdbDriverInstaller.CLI.Infrastructure;
 using AdbDriverInstaller.CLI.Localization;
 using AdbDriverInstaller.Core.Enums;
@@ -10,20 +6,54 @@ using AdbDriverInstaller.Core.Models;
 using AdbDriverInstaller.Infrastructure.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace AdbDriverInstaller.CLI.Commands;
 
 public sealed class InstallCommand(
     IPlatformDetector platformDetector,
-    InstallOrchestrator orchestrator) : AsyncCommand
+    IAdbVerifier adbVerifier,
+    InstallOrchestrator orchestrator) : AsyncCommand<InstallCommand.Settings>
 {
     private static Localizer S => Localizer.Instance;
 
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public sealed class Settings : CommandSettings
+    {
+        [CommandOption("-s|--silent")]
+        [Description("Non-interactive mode. Installs with defaults, no prompts.")]
+        public bool Silent { get; init; }
+
+        [CommandOption("-p|--path <PATH>")]
+        [Description("Custom install path (default: platform default)")]
+        public string? InstallPath { get; init; }
+
+        [CommandOption("--system")]
+        [Description("Install system-wide (requires admin)")]
+        public bool System { get; init; }
+
+        [CommandOption("--no-drivers")]
+        [Description("Skip USB driver installation (Windows)")]
+        public bool NoDrivers { get; init; }
+
+        [CommandOption("--no-path")]
+        [Description("Don't add to PATH")]
+        public bool NoPath { get; init; }
+
+        [CommandOption("--no-verify")]
+        [Description("Skip post-install verification")]
+        public bool NoVerify { get; init; }
+    }
+
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
     {
         try
         {
-            return await RunWizardAsync();
+            return settings.Silent
+                ? await RunSilentAsync(settings)
+                : await RunWizardAsync(settings);
         }
         catch (OperationCanceledException)
         {
@@ -69,10 +99,73 @@ public sealed class InstallCommand(
         AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
     }
 
-    private async Task<int> RunWizardAsync()
+    private async Task<int> RunSilentAsync(Settings settings)
+    {
+        var level = settings.System ? InstallLevel.System : InstallLevel.User;
+        var installPath = settings.InstallPath ?? platformDetector.GetDefaultInstallPath(level);
+
+        Console.WriteLine(S["SilentModeHeader"]);
+        Console.WriteLine(S.Format("SilentInstallPath", installPath));
+
+        var options = new InstallOptions
+        {
+            InstallPath = installPath,
+            AddToPath = !settings.NoPath,
+            InstallUsbDrivers = !settings.NoDrivers,
+            VerifyAfterInstall = !settings.NoVerify,
+            Level = level
+        };
+
+        orchestrator.OnStatusUpdate = msg => Console.WriteLine($"  {msg}");
+        orchestrator.DownloadProgress = new Progress<double>(_ => { });
+        orchestrator.ExtractProgress = new Progress<double>(_ => { });
+
+        var result = await orchestrator.InstallAsync(options);
+
+        if (result.Success)
+        {
+            Console.WriteLine(S.Format("SilentOk", result.AdbVersion ?? "installed", result.PlatformToolsPath ?? ""));
+            return 0;
+        }
+
+        Console.Error.WriteLine(S.Format("SilentFail", result.ErrorMessage ?? ""));
+        return 1;
+    }
+
+    private async Task<int> RunWizardAsync(Settings settings)
     {
         AnsiConsole.Clear();
         RenderHeader();
+
+        // ── Check for existing installation ─────────────────────
+        var existingPath = platformDetector.GetDefaultInstallPath();
+
+        var existing = await AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots2)
+            .SpinnerStyle(Style.Parse("dodgerblue1"))
+            .StartAsync(S["CheckingExisting"],
+                async _ => await adbVerifier.VerifyAsync(existingPath));
+
+        if (existing.AdbFound)
+        {
+            AnsiConsole.MarkupLine($"  [yellow]{S["AdbAlreadyInstalled"]}[/] [cyan]{Markup.Escape(existing.AdbVersion ?? "unknown")}[/]");
+            if (existing.AdbPath is not null)
+                AnsiConsole.MarkupLine($"  [dim]Path: {Markup.Escape(existing.AdbPath)}[/]");
+            AnsiConsole.WriteLine();
+
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title($"[bold]{S["ExistingAction"]}[/]")
+                    .AddChoices(S["ReinstallUpdate"], S["Cancel"]));
+
+            if (choice == S["Cancel"])
+            {
+                AnsiConsole.MarkupLine($"  [yellow]{S["InstallCancelled"]}[/]");
+                return 0;
+            }
+
+            AnsiConsole.WriteLine();
+        }
 
         // ── Step 1 — Platform Detection ─────────────────────────
         WriteStep(1, S["StepDetectingPlatform"]);
@@ -85,7 +178,9 @@ public sealed class InstallCommand(
             PlatformType.Linux => "Linux",
             _ => "Unknown"
         };
-        var arch = RuntimeInformation.OSArchitecture.ToString();
+
+        //var arch = RuntimeInformation.OSArchitecture.ToString();
+        var arch = RuntimeInformation.OSDescription.ToString() + " " + RuntimeInformation.OSArchitecture.ToString() + " " + RuntimeInformation.ProcessArchitecture.ToString() + " - " + Environment.MachineName.ToString();
 
         var infoTable = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
         infoTable.AddColumn(new TableColumn($"[bold]{S["Property"]}[/]").NoWrap().PadRight(2));
@@ -179,13 +274,13 @@ public sealed class InstallCommand(
         var summary = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
         summary.AddColumn(new TableColumn($"[bold]{S["Component"]}[/]").PadRight(2));
         summary.AddColumn(new TableColumn($"[bold]{S["Action"]}[/]"));
-        summary.AddRow("Platform Tools", $"[green]{S["Install"]}[/]");
+        summary.AddRow(S["ComponentPlatformTools"], $"[green]{S["Install"]}[/]");
         summary.AddRow(S["InstallPath"], $"[cyan]{Markup.Escape(installPath)}[/]");
         summary.AddRow(S["Level"], installLevel == InstallLevel.System
             ? $"[yellow]{S["SystemLevel"]}[/]"
             : $"[green]{S["UserLevel"]}[/]");
         summary.AddRow("PATH", addToPath ? $"[green]{S["Yes"]}[/]" : $"[grey]{S["Skip"]}[/]");
-        summary.AddRow("USB Drivers", installDrivers ? $"[green]{S["Install"]}[/]" : $"[grey]{S["Skip"]}[/]");
+        summary.AddRow(S["ComponentUsbDrivers"], installDrivers ? $"[green]{S["Install"]}[/]" : $"[grey]{S["Skip"]}[/]");
         summary.AddRow(S["ComponentVerify"], verify ? $"[green]{S["Yes"]}[/]" : $"[grey]{S["Skip"]}[/]");
         AnsiConsole.Write(summary);
         AnsiConsole.WriteLine();
@@ -320,6 +415,9 @@ public sealed class InstallCommand(
             RenderSuccessPanel(result);
 
             AnsiConsole.WriteLine();
+            RenderNextSteps(result);
+
+            AnsiConsole.WriteLine();
             WriteStep(8, S["StepPostInstall"]);
 
             var postAction = AnsiConsole.Prompt(
@@ -389,7 +487,7 @@ public sealed class InstallCommand(
         grid.AddColumn(new GridColumn().PadRight(2));
         grid.AddColumn();
 
-        grid.AddRow("[dim]Path:[/]", $"[cyan]{Markup.Escape(result.PlatformToolsPath ?? "—")}[/]");
+        grid.AddRow($"[dim]{S["Path"]}:[/]", $"[cyan]{Markup.Escape(result.PlatformToolsPath ?? "—")}[/]");
         if (result.AdbVersion is not null)
             grid.AddRow("[dim]ADB:[/]", $"[green]{Markup.Escape(result.AdbVersion)}[/]");
         if (result.FastbootVersion is not null)
@@ -397,7 +495,7 @@ public sealed class InstallCommand(
         grid.AddRow("[dim]PATH:[/]", result.PathConfigured
             ? $"[green]{S["AddedToPath"]}[/]"
             : $"[grey]{S["PathNotModified"]}[/]");
-        grid.AddRow("[dim]USB Drivers:[/]", result.UsbDriversInstalled
+        grid.AddRow($"[dim]{S["ComponentUsbDrivers"]}:[/]", result.UsbDriversInstalled
             ? $"[green]{S["UsbDriversInstalled"]}[/]"
             : $"[grey]{S["UsbDriversSkipped"]}[/]");
 
@@ -405,6 +503,28 @@ public sealed class InstallCommand(
             .Header($"[green bold] {S["InstallSuccessful"]} [/]")
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Green)
+            .Padding(1, 0)
+            .Expand());
+    }
+
+    private static void RenderNextSteps(InstallResult result)
+    {
+        var tips = new Grid();
+        tips.AddColumn(new GridColumn().PadRight(1));
+        tips.AddColumn();
+
+        tips.AddRow("[yellow]1.[/]", result.PathConfigured
+            ? $"[white]{S["NextStepOpenTerminal"]}[/]"
+            : $"[white]{S["NextStepAddPathManual"]}[/]");
+        tips.AddRow("[yellow]2.[/]", $"[white]{S["NextStepUsbDebugging"]}[/]");
+        tips.AddRow("[yellow]3.[/]", $"[white]{S["NextStepAdbDevices"]}[/]");
+        tips.AddRow("[yellow]4.[/]", $"[white]{S["NextStepVerify"]}[/]");
+        tips.AddRow("[yellow]5.[/]", $"[white]{S["NextStepUpdate"]}[/]");
+
+        AnsiConsole.Write(new Panel(tips)
+            .Header($"[dodgerblue1 bold] {S["NextStepsHeader"]} [/]")
+            .Border(BoxBorder.Rounded)
+            .BorderColor(Color.DodgerBlue1)
             .Padding(1, 0)
             .Expand());
     }

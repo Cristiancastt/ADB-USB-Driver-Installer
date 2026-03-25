@@ -134,4 +134,44 @@
   <data name="NetworkError" xml:space="preserve"><value>网络错误 - 请检查您的网络连接</value></data>
   <data name="PermissionError" xml:space="preserve"><value>权限不足 - 请以管理员身份运行</value></data>
   <data name="FileSystemError" xml:space="preserve"><value>文件系统错误</value></data>
-  <data name="UnexpectedError" xml:space="preserve"><value>发生意外错误</value></data></root>
+  <data name="UnexpectedError" xml:space="preserve"><value>发生意外错误</value></data>
+
+  <!-- Silent mode -->
+  <data name="SilentModeHeader" xml:space="preserve"><value>ADB Driver Installer — 静默模式</value></data>
+  <data name="SilentInstallPath" xml:space="preserve"><value>安装路径：{0}</value></data>
+  <data name="SilentOk" xml:space="preserve"><value>成功 — {0} 位于 {1}</value></data>
+  <data name="SilentFail" xml:space="preserve"><value>失败 — {0}</value></data>
+
+  <!-- Existing install detection -->
+  <data name="AdbAlreadyInstalled" xml:space="preserve"><value>ADB 已安装：</value></data>
+  <data name="ExistingAction" xml:space="preserve"><value>您想做什么？</value></data>
+  <data name="ReinstallUpdate" xml:space="preserve"><value>重新安装 / 更新</value></data>
+  <data name="Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="CheckingExisting" xml:space="preserve"><value>正在检查现有安装...</value></data>
+
+  <!-- Next steps -->
+  <data name="NextStepsHeader" xml:space="preserve"><value>后续步骤</value></data>
+  <data name="NextStepOpenTerminal" xml:space="preserve"><value>打开[bold]新终端[/]以使 PATH 更改生效</value></data>
+  <data name="NextStepAddPathManual" xml:space="preserve"><value>手动将安装目录添加到 PATH</value></data>
+  <data name="NextStepUsbDebugging" xml:space="preserve"><value>在 Android 设备上启用[bold]USB 调试[/]（设置 → 开发者选项）</value></data>
+  <data name="NextStepAdbDevices" xml:space="preserve"><value>连接设备并运行 [bold]adb devices[/] 进行验证</value></data>
+  <data name="NextStepVerify" xml:space="preserve"><value>随时运行 [bold]adb-installer verify[/] 检查配置</value></data>
+  <data name="NextStepUpdate" xml:space="preserve"><value>运行 [bold]adb-installer update[/] 获取最新的 Platform Tools</value></data>
+
+  <!-- Update command -->
+  <data name="UpdateTitle" xml:space="preserve"><value>ADB 更新</value></data>
+  <data name="UpdateSubtitle" xml:space="preserve"><value>检查更新并重新安装最新的 Platform Tools</value></data>
+  <data name="CheckingInstallation" xml:space="preserve"><value>正在检查当前安装...</value></data>
+  <data name="NoExistingInstall" xml:space="preserve"><value>未找到现有的 ADB 安装。</value></data>
+  <data name="RunInstallHint" xml:space="preserve"><value>运行 [bold]adb-installer install[/] 安装 ADB。</value></data>
+  <data name="NoVersionApi" xml:space="preserve"><value>Google 未提供版本 API — 将下载并安装最新版本。</value></data>
+  <data name="ConfirmUpdate" xml:space="preserve"><value>下载并安装最新的 Platform Tools？</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ 更新成功</value></data>
+  <data name="PreviousVersion" xml:space="preserve"><value>之前：</value></data>
+  <data name="UpdatedVersion" xml:space="preserve"><value>已更新：</value></data>
+
+  <!-- Command headers -->
+  <data name="VerifyHeader" xml:space="preserve"><value>ADB 验证</value></data>
+  <data name="UninstallHeader" xml:space="preserve"><value>ADB 卸载</value></data>
+  <data name="CurrentVersion" xml:space="preserve"><value>当前版本</value></data>
+</root>

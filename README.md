@@ -98,6 +98,7 @@ sha256sum -c SHA256SUMS
 ### 2. Verify the GPG signature
 
 Import the project maintainer's public key:
+KEY ID: `889328956A98A0E2BBB01D9D9BDCDF7FF4A84772`
 
 ```bash
 gpg --keyserver keyserver.ubuntu.com --recv-keys <KEY_ID>

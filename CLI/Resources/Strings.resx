@@ -151,4 +151,43 @@
   <data name="PermissionError" xml:space="preserve"><value>Permission denied — try running as administrator</value></data>
   <data name="FileSystemError" xml:space="preserve"><value>File system error</value></data>
   <data name="UnexpectedError" xml:space="preserve"><value>An unexpected error occurred</value></data>
+
+  <!-- Silent mode -->
+  <data name="SilentModeHeader" xml:space="preserve"><value>ADB Driver Installer — silent mode</value></data>
+  <data name="SilentInstallPath" xml:space="preserve"><value>Install path: {0}</value></data>
+  <data name="SilentOk" xml:space="preserve"><value>OK — {0} at {1}</value></data>
+  <data name="SilentFail" xml:space="preserve"><value>FAIL — {0}</value></data>
+
+  <!-- Existing install detection -->
+  <data name="AdbAlreadyInstalled" xml:space="preserve"><value>ADB already installed:</value></data>
+  <data name="ExistingAction" xml:space="preserve"><value>What do you want to do?</value></data>
+  <data name="ReinstallUpdate" xml:space="preserve"><value>Reinstall / Update</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="CheckingExisting" xml:space="preserve"><value>Checking existing installation...</value></data>
+
+  <!-- Next steps -->
+  <data name="NextStepsHeader" xml:space="preserve"><value>Next Steps</value></data>
+  <data name="NextStepOpenTerminal" xml:space="preserve"><value>Open a [bold]new terminal[/] for PATH changes to take effect</value></data>
+  <data name="NextStepAddPathManual" xml:space="preserve"><value>Add the install directory to your PATH manually</value></data>
+  <data name="NextStepUsbDebugging" xml:space="preserve"><value>Enable [bold]USB Debugging[/] on your Android device (Settings → Developer Options)</value></data>
+  <data name="NextStepAdbDevices" xml:space="preserve"><value>Connect your device and run [bold]adb devices[/] to verify</value></data>
+  <data name="NextStepVerify" xml:space="preserve"><value>Run [bold]adb-installer verify[/] at any time to check your setup</value></data>
+  <data name="NextStepUpdate" xml:space="preserve"><value>Run [bold]adb-installer update[/] to get the latest Platform Tools</value></data>
+
+  <!-- Update command -->
+  <data name="UpdateTitle" xml:space="preserve"><value>ADB Update</value></data>
+  <data name="UpdateSubtitle" xml:space="preserve"><value>Check for updates and reinstall the latest Platform Tools</value></data>
+  <data name="CheckingInstallation" xml:space="preserve"><value>Checking current installation...</value></data>
+  <data name="NoExistingInstall" xml:space="preserve"><value>No existing ADB installation found.</value></data>
+  <data name="RunInstallHint" xml:space="preserve"><value>Run [bold]adb-installer install[/] to install ADB.</value></data>
+  <data name="NoVersionApi" xml:space="preserve"><value>Google does not expose a version API — the latest build will be downloaded and installed.</value></data>
+  <data name="ConfirmUpdate" xml:space="preserve"><value>Download and install the latest Platform Tools?</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ Update Successful</value></data>
+  <data name="PreviousVersion" xml:space="preserve"><value>Previous:</value></data>
+  <data name="UpdatedVersion" xml:space="preserve"><value>Updated:</value></data>
+
+  <!-- Command headers -->
+  <data name="VerifyHeader" xml:space="preserve"><value>ADB Verify</value></data>
+  <data name="UninstallHeader" xml:space="preserve"><value>ADB Uninstall</value></data>
+  <data name="CurrentVersion" xml:space="preserve"><value>Current Version</value></data>
 </root>

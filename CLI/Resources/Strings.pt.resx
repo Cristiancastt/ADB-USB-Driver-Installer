@@ -136,4 +136,43 @@
   <data name="PermissionError" xml:space="preserve"><value>Permissão negada — tente executar como administrador</value></data>
   <data name="FileSystemError" xml:space="preserve"><value>Erro no sistema de arquivos</value></data>
   <data name="UnexpectedError" xml:space="preserve"><value>Ocorreu um erro inesperado</value></data>
+
+  <!-- Silent mode -->
+  <data name="SilentModeHeader" xml:space="preserve"><value>ADB Driver Installer — modo silencioso</value></data>
+  <data name="SilentInstallPath" xml:space="preserve"><value>Caminho de instalação: {0}</value></data>
+  <data name="SilentOk" xml:space="preserve"><value>OK — {0} em {1}</value></data>
+  <data name="SilentFail" xml:space="preserve"><value>FALHA — {0}</value></data>
+
+  <!-- Existing install detection -->
+  <data name="AdbAlreadyInstalled" xml:space="preserve"><value>ADB já está instalado:</value></data>
+  <data name="ExistingAction" xml:space="preserve"><value>O que deseja fazer?</value></data>
+  <data name="ReinstallUpdate" xml:space="preserve"><value>Reinstalar / Atualizar</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="CheckingExisting" xml:space="preserve"><value>Verificando instalação existente...</value></data>
+
+  <!-- Next steps -->
+  <data name="NextStepsHeader" xml:space="preserve"><value>Próximos passos</value></data>
+  <data name="NextStepOpenTerminal" xml:space="preserve"><value>Abra um [bold]novo terminal[/] para que as alterações do PATH tenham efeito</value></data>
+  <data name="NextStepAddPathManual" xml:space="preserve"><value>Adicione o diretório de instalação ao PATH manualmente</value></data>
+  <data name="NextStepUsbDebugging" xml:space="preserve"><value>Ative a [bold]depuração USB[/] no seu dispositivo Android (Configurações → Opções do desenvolvedor)</value></data>
+  <data name="NextStepAdbDevices" xml:space="preserve"><value>Conecte seu dispositivo e execute [bold]adb devices[/] para verificar</value></data>
+  <data name="NextStepVerify" xml:space="preserve"><value>Execute [bold]adb-installer verify[/] a qualquer momento para verificar sua configuração</value></data>
+  <data name="NextStepUpdate" xml:space="preserve"><value>Execute [bold]adb-installer update[/] para obter os Platform Tools mais recentes</value></data>
+
+  <!-- Update command -->
+  <data name="UpdateTitle" xml:space="preserve"><value>Atualização do ADB</value></data>
+  <data name="UpdateSubtitle" xml:space="preserve"><value>Verificar atualizações e reinstalar os Platform Tools mais recentes</value></data>
+  <data name="CheckingInstallation" xml:space="preserve"><value>Verificando instalação atual...</value></data>
+  <data name="NoExistingInstall" xml:space="preserve"><value>Nenhuma instalação do ADB encontrada.</value></data>
+  <data name="RunInstallHint" xml:space="preserve"><value>Execute [bold]adb-installer install[/] para instalar o ADB.</value></data>
+  <data name="NoVersionApi" xml:space="preserve"><value>O Google não disponibiliza uma API de versão — a compilação mais recente será baixada e instalada.</value></data>
+  <data name="ConfirmUpdate" xml:space="preserve"><value>Baixar e instalar os Platform Tools mais recentes?</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ Atualização bem-sucedida</value></data>
+  <data name="PreviousVersion" xml:space="preserve"><value>Anterior:</value></data>
+  <data name="UpdatedVersion" xml:space="preserve"><value>Atualizado:</value></data>
+
+  <!-- Command headers -->
+  <data name="VerifyHeader" xml:space="preserve"><value>Verificação do ADB</value></data>
+  <data name="UninstallHeader" xml:space="preserve"><value>Desinstalar ADB</value></data>
+  <data name="CurrentVersion" xml:space="preserve"><value>Versão atual</value></data>
 </root>

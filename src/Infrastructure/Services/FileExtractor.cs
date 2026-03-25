@@ -1,6 +1,6 @@
-using System.IO.Compression;
 using AdbDriverInstaller.Core.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.IO.Compression;
 
 namespace AdbDriverInstaller.Infrastructure.Services;
 

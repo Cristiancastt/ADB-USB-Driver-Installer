@@ -34,7 +34,7 @@ public sealed class VerifyCommand(IAdbVerifier adbVerifier, IPlatformDetector pl
 
     private async Task<int> RunVerifyAsync()
     {
-        AnsiConsole.Write(new Rule($"[bold dodgerblue1]ADB Verify[/]").LeftJustified().RuleStyle("grey"));
+        AnsiConsole.Write(new Rule($"[bold dodgerblue1]{S["VerifyHeader"]}[/]").LeftJustified().RuleStyle("grey"));
         AnsiConsole.MarkupLine($"  [dim]{S["VerificationTitle"]}[/]");
         AnsiConsole.WriteLine();
 

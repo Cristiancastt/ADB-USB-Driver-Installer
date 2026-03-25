@@ -7,15 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.Reflection;
 
 // Initialize localization (auto-detects system language)
 _ = new Localizer();
 
-using var settingsStream = typeof(Program).Assembly
-    .GetManifestResourceStream("AdbDriverInstaller.CLI.appsettings.json")!;
-var configuration = new ConfigurationBuilder()
-    .AddJsonStream(settingsStream)
-    .Build();
+using var settingsStream = typeof(Program).Assembly.GetManifestResourceStream("AdbDriverInstaller.CLI.appsettings.json")!;
+var configuration = new ConfigurationBuilder().AddJsonStream(settingsStream).Build();
 
 var services = new ServiceCollection();
 
@@ -27,27 +25,29 @@ services.AddLogging(builder =>
 
 services.AddInfrastructure(configuration);
 
+var version = typeof(Program).Assembly
+    .GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()
+    ?.InformationalVersion?.Split('+')[0] ?? "dev";
+
 var registrar = new TypeRegistrar(services);
 var app = new CommandApp(registrar);
 
 app.Configure(config =>
 {
     config.SetApplicationName("adb-installer");
-    config.SetApplicationVersion("1.0.0");
+    config.SetApplicationVersion(version);
 
-    config.AddCommand<InstallCommand>("install")
-        .WithDescription("Interactive wizard to install ADB, Fastboot & USB drivers");
+    config.AddCommand<InstallCommand>("install").WithDescription("Interactive wizard to install ADB, Fastboot & USB drivers");
 
-    config.AddCommand<VerifyCommand>("verify")
-        .WithDescription("Verify that ADB and Fastboot are properly installed");
+    config.AddCommand<VerifyCommand>("verify").WithDescription("Verify that ADB and Fastboot are properly installed");
 
-    config.AddCommand<UninstallCommand>("uninstall")
-        .WithDescription("Remove installed platform tools");
+    config.AddCommand<UninstallCommand>("uninstall").WithDescription("Remove installed platform tools");
+
+    config.AddCommand<UpdateCommand>("update").WithDescription("Update ADB and Fastboot to the latest version");
 });
 
 // If no args, default to the interactive install wizard
-if (args.Length == 0)
-    args = ["install"];
+if (args.Length == 0) args = ["install"];
 
 try
 {

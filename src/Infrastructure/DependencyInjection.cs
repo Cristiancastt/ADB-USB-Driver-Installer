@@ -17,7 +17,7 @@ public static class DependencyInjection
         // HTTP client
         services.AddHttpClient("AdbInstaller", client =>
         {
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("ADB-Driver-Installer/1.0");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("ADB-Driver-Installer");
         });
 
         // Core services

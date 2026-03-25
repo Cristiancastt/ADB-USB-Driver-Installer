@@ -1,6 +1,5 @@
-using System.Diagnostics;
-using AdbDriverInstaller.Core.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace AdbDriverInstaller.Infrastructure.Services.Platform;
 

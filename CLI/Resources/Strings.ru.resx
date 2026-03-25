@@ -136,4 +136,43 @@
   <data name="PermissionError" xml:space="preserve"><value>Доступ запрещён — запустите от имени администратора</value></data>
   <data name="FileSystemError" xml:space="preserve"><value>Ошибка файловой системы</value></data>
   <data name="UnexpectedError" xml:space="preserve"><value>Произошла непредвиденная ошибка</value></data>
+
+  <!-- Silent mode -->
+  <data name="SilentModeHeader" xml:space="preserve"><value>ADB Driver Installer — тихий режим</value></data>
+  <data name="SilentInstallPath" xml:space="preserve"><value>Путь установки: {0}</value></data>
+  <data name="SilentOk" xml:space="preserve"><value>OK — {0} в {1}</value></data>
+  <data name="SilentFail" xml:space="preserve"><value>ОШИБКА — {0}</value></data>
+
+  <!-- Existing install detection -->
+  <data name="AdbAlreadyInstalled" xml:space="preserve"><value>ADB уже установлен:</value></data>
+  <data name="ExistingAction" xml:space="preserve"><value>Что вы хотите сделать?</value></data>
+  <data name="ReinstallUpdate" xml:space="preserve"><value>Переустановить / Обновить</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="CheckingExisting" xml:space="preserve"><value>Проверка существующей установки...</value></data>
+
+  <!-- Next steps -->
+  <data name="NextStepsHeader" xml:space="preserve"><value>Дальнейшие шаги</value></data>
+  <data name="NextStepOpenTerminal" xml:space="preserve"><value>Откройте [bold]новый терминал[/], чтобы изменения PATH вступили в силу</value></data>
+  <data name="NextStepAddPathManual" xml:space="preserve"><value>Добавьте каталог установки в PATH вручную</value></data>
+  <data name="NextStepUsbDebugging" xml:space="preserve"><value>Включите [bold]отладку по USB[/] на Android-устройстве (Настройки → Для разработчиков)</value></data>
+  <data name="NextStepAdbDevices" xml:space="preserve"><value>Подключите устройство и выполните [bold]adb devices[/] для проверки</value></data>
+  <data name="NextStepVerify" xml:space="preserve"><value>Выполните [bold]adb-installer verify[/] для проверки настройки в любое время</value></data>
+  <data name="NextStepUpdate" xml:space="preserve"><value>Выполните [bold]adb-installer update[/] для получения последних Platform Tools</value></data>
+
+  <!-- Update command -->
+  <data name="UpdateTitle" xml:space="preserve"><value>Обновление ADB</value></data>
+  <data name="UpdateSubtitle" xml:space="preserve"><value>Проверить обновления и переустановить последние Platform Tools</value></data>
+  <data name="CheckingInstallation" xml:space="preserve"><value>Проверка текущей установки...</value></data>
+  <data name="NoExistingInstall" xml:space="preserve"><value>Существующая установка ADB не найдена.</value></data>
+  <data name="RunInstallHint" xml:space="preserve"><value>Выполните [bold]adb-installer install[/] для установки ADB.</value></data>
+  <data name="NoVersionApi" xml:space="preserve"><value>Google не предоставляет API версий — будет загружена и установлена последняя сборка.</value></data>
+  <data name="ConfirmUpdate" xml:space="preserve"><value>Загрузить и установить последние Platform Tools?</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ Обновление выполнено</value></data>
+  <data name="PreviousVersion" xml:space="preserve"><value>Предыдущая:</value></data>
+  <data name="UpdatedVersion" xml:space="preserve"><value>Обновлённая:</value></data>
+
+  <!-- Command headers -->
+  <data name="VerifyHeader" xml:space="preserve"><value>Проверка ADB</value></data>
+  <data name="UninstallHeader" xml:space="preserve"><value>Удаление ADB</value></data>
+  <data name="CurrentVersion" xml:space="preserve"><value>Текущая версия</value></data>
 </root>

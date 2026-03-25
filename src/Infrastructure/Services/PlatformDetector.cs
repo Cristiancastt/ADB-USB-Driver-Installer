@@ -1,9 +1,9 @@
-using System.Runtime.InteropServices;
 using AdbDriverInstaller.Core.Configuration;
 using AdbDriverInstaller.Core.Enums;
 using AdbDriverInstaller.Core.Interfaces;
 using AdbDriverInstaller.Core.Models;
 using Microsoft.Extensions.Options;
+using System.Runtime.InteropServices;
 
 namespace AdbDriverInstaller.Infrastructure.Services;
 

@@ -1,7 +1,7 @@
-using System.Diagnostics;
 using AdbDriverInstaller.Core.Interfaces;
 using AdbDriverInstaller.Core.Models;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace AdbDriverInstaller.Infrastructure.Services;
 
@@ -77,13 +77,35 @@ public sealed class AdbVerifier(ILogger<AdbVerifier> logger) : IAdbVerifier
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    // Prevent adb from starting a server that blocks forever
+                    EnvironmentVariables = { ["ADB_TRACE"] = "" }
                 }
             };
 
             process.Start();
-            var output = await process.StandardOutput.ReadToEndAsync(ct);
-            await process.WaitForExitAsync(ct);
+
+            // Use a combined timeout: either the CancellationToken fires or 10s passes
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            cts.CancelAfter(TimeSpan.FromSeconds(10));
+
+            string output;
+            try
+            {
+                output = await process.StandardOutput.ReadToEndAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                KillProcess(process);
+                return null;
+            }
+
+            // Wait for exit with timeout — don't hang forever
+            if (!process.WaitForExit(5000))
+            {
+                KillProcess(process);
+                logger.LogWarning("{Executable} did not exit in time, killed", executablePath);
+            }
 
             var versionLine = output.Split('\n', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             return versionLine?.Trim();
@@ -93,5 +115,15 @@ public sealed class AdbVerifier(ILogger<AdbVerifier> logger) : IAdbVerifier
             logger.LogWarning(ex, "Failed to get version for {Executable}", executablePath);
             return null;
         }
+    }
+
+    private static void KillProcess(Process process)
+    {
+        try
+        {
+            if (!process.HasExited)
+                process.Kill(entireProcessTree: true);
+        }
+        catch { }
     }
 }
