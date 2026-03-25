@@ -31,22 +31,6 @@ docs/*.tsbuildinfo
 docs/next-env.d.ts
 docs/coverage/
 
-node_modules/
-.next/
-out/
-.pnp
-.pnp.*
-.yarn/*
-.yarn/patches
-.yarn/plugins
-.yarn/releases
-.yarn/versions
-.vercel
-.env*
-*.tsbuildinfo
-next-env.d.ts
-coverage/
-
 ## Python
 .venv/
 __pycache__/

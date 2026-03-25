@@ -7,10 +7,10 @@ const nextConfig: NextConfig = {
    * Set base path to match the GitHub repository name.
    * Change this value if your repository has a different name.
    */
-  basePath: "/adb-latest-driver-installer",
+  basePath: "/ADB-USB-Driver-Installer",
 
   env: {
-    NEXT_PUBLIC_BASE_PATH: "/adb-latest-driver-installer",
+    NEXT_PUBLIC_BASE_PATH: "/ADB-USB-Driver-Installer",
   },
 
   images: {
