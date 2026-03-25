@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-accent-50: #eef2ff;
+  --color-accent-100: #e0e7ff;
+  --color-accent-200: #c7d2fe;
+  --color-accent-300: #a5b4fc;
+  --color-accent-400: #818cf8;
+  --color-accent-500: #6366f1;
+  --color-accent-600: #4f46e5;
+  --color-accent-700: #4338ca;
+  --color-surface: #f8f9fc;
+  --font-sans: var(--font-sora), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* Body paragraphs use system sans-serif for readability contrast */
+p {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+}
+
+/* ── Tab pill states ──────────────────────────────────── */
+.tab-btn {
+  background: transparent;
+  color: #9ca3af;
+}
+.tab-btn.active {
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.tab-btn:not(.active):hover {
+  color: #6b7280;
+}
+
+/* ── Terminal animation ───────────────────────────────── */
+#termAnim .term-line {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: termFadeIn 0.3s ease forwards;
+}
+@keyframes termFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes termBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.term-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: #a3e635;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: termBlink 0.8s step-end infinite;
+}
+
+/* ── Brutalist Microsoft Button ───────────────────────── */
+.brutalist-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 169px;
+  height: 60px;
+  background-color: #ffffff;
+  color: #fff;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  border: 3px solid #fff;
+  border-radius: 16;
+  outline: 3px solid #000;
+  box-shadow: 6px 6px 0 #00a4ef;
+  transition: all 0.1s ease-out;
+  padding: 0 15px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+.brutalist-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  z-index: 1;
+  opacity: 0;
+  transition: none;
+}
+.brutalist-button:hover::before {
+  opacity: 1;
+  animation: msSlide 2s infinite;
+}
+.brutalist-button:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 #000;
+  background-color: #000;
+  color: #fff;
+}
+.brutalist-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #00a4ef;
+  background-color: #fff;
+  color: #000;
+  border-color: #000;
+}
+@keyframes msSlide {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.ms-logo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  width: 26px;
+  height: 26px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease-out;
+  position: relative;
+  z-index: 1;
+}
+.brutalist-button:hover .ms-logo {
+  transform: rotate(-10deg) scale(1.1);
+}
+.brutalist-button:active .ms-logo {
+  transform: rotate(10deg) scale(0.9);
+}
+.ms-logo-square {
+  width: 100%;
+  height: 100%;
+}
+.ms-logo-square:nth-child(1) {
+  background-color: #f25022;
+}
+.ms-logo-square:nth-child(2) {
+  background-color: #7fba00;
+}
+.ms-logo-square:nth-child(3) {
+  background-color: #00a4ef;
+}
+.ms-logo-square:nth-child(4) {
+  background-color: #ffb900;
+}
+
+.button-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  transition: transform 0.2s ease-out;
+  position: relative;
+  z-index: 1;
+}
+.brutalist-button:hover .button-text {
+  transform: skew(-5deg);
+}
+.brutalist-button:active .button-text {
+  transform: skew(5deg);
+}
+.button-text span:first-child {
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.button-text span:last-child {
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+/* ── Mobile: commands stack vertically ────────────────── */
+@media (max-width: 640px) {
+  .cmd-stack {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  .cmd-stack span {
+    text-align: left !important;
+  }
+}

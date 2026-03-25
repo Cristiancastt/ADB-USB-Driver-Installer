@@ -30,8 +30,7 @@ public sealed class DownloadService(IHttpClientFactory httpClientFactory, ILogge
                 var totalBytes = response.Content.Headers.ContentLength ?? -1L;
 
                 await using var contentStream = await response.Content.ReadAsStreamAsync(ct);
-                await using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None,
-                    bufferSize: 81920, useAsync: true);
+                await using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 81920, useAsync: true);
 
                 var buffer = new byte[81920];
                 long totalRead = 0;
@@ -42,8 +41,7 @@ public sealed class DownloadService(IHttpClientFactory httpClientFactory, ILogge
                     await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), ct);
                     totalRead += bytesRead;
 
-                    if (totalBytes > 0)
-                        progress?.Report((double)totalRead / totalBytes * 100);
+                    if (totalBytes > 0) progress?.Report((double)totalRead / totalBytes * 100);
                 }
 
                 progress?.Report(100);
@@ -56,8 +54,7 @@ public sealed class DownloadService(IHttpClientFactory httpClientFactory, ILogge
             }
             catch (Exception ex) when (attempt < MaxRetries)
             {
-                logger.LogWarning(ex, "Download attempt {Attempt}/{Max} failed for {Url}. Retrying...",
-                    attempt, MaxRetries, url);
+                logger.LogWarning(ex, "Download attempt {Attempt}/{Max} failed for {Url}. Retrying...", attempt, MaxRetries, url);
                 progress?.Report(0);
                 await Task.Delay(TimeSpan.FromSeconds(attempt * 2), ct);
             }
@@ -71,8 +68,7 @@ public sealed class DownloadService(IHttpClientFactory httpClientFactory, ILogge
         var finalTotalBytes = finalResponse.Content.Headers.ContentLength ?? -1L;
 
         await using var finalContentStream = await finalResponse.Content.ReadAsStreamAsync(ct);
-        await using var finalFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None,
-            bufferSize: 81920, useAsync: true);
+        await using var finalFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 81920, useAsync: true);
 
         var finalBuffer = new byte[81920];
         long finalTotalRead = 0;
@@ -83,8 +79,7 @@ public sealed class DownloadService(IHttpClientFactory httpClientFactory, ILogge
             await finalFileStream.WriteAsync(finalBuffer.AsMemory(0, finalBytesRead), ct);
             finalTotalRead += finalBytesRead;
 
-            if (finalTotalBytes > 0)
-                progress?.Report((double)finalTotalRead / finalTotalBytes * 100);
+            if (finalTotalBytes > 0) progress?.Report((double)finalTotalRead / finalTotalBytes * 100);
         }
 
         progress?.Report(100);
