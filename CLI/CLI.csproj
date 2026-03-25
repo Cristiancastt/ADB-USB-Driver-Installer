@@ -31,8 +31,4 @@
     <EmbeddedResource Include="appsettings.json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Assets/icons/**" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Assets/icons')" />
-  </ItemGroup>
-
 </Project>
