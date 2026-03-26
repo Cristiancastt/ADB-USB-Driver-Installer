@@ -101,13 +101,13 @@
   <data name="VerifyingInstallation" xml:space="preserve"><value>Verifying installation</value></data>
 
   <!-- Success -->
-  <data name="InstallSuccessful" xml:space="preserve"><value>✓ Installation Successful</value></data>
+  <data name="InstallSuccessful" xml:space="preserve"><value>Installation Successful</value></data>
   <data name="Details" xml:space="preserve"><value>Details</value></data>
   <data name="Path" xml:space="preserve"><value>Path</value></data>
   <data name="Status" xml:space="preserve"><value>Status</value></data>
-  <data name="AddedToPath" xml:space="preserve"><value>✓ Added to PATH</value></data>
+  <data name="AddedToPath" xml:space="preserve"><value>Added to PATH</value></data>
   <data name="PathNotModified" xml:space="preserve"><value>— PATH not modified</value></data>
-  <data name="UsbDriversInstalled" xml:space="preserve"><value>✓ USB drivers installed</value></data>
+  <data name="UsbDriversInstalled" xml:space="preserve"><value>USB drivers installed</value></data>
   <data name="UsbDriversSkipped" xml:space="preserve"><value>— USB drivers skipped or N/A</value></data>
   <data name="InstallFailed" xml:space="preserve"><value>Installation Failed</value></data>
   <data name="UnknownError" xml:space="preserve"><value>Unknown error</value></data>
@@ -127,8 +127,8 @@
   <!-- Verify command -->
   <data name="VerificationTitle" xml:space="preserve"><value>ADB Installation Verification</value></data>
   <data name="ScanningAdb" xml:space="preserve"><value>Scanning for ADB &amp; Fastboot...</value></data>
-  <data name="Found" xml:space="preserve"><value>✓ Found</value></data>
-  <data name="NotFound" xml:space="preserve"><value>✗ Not Found</value></data>
+  <data name="Found" xml:space="preserve"><value>Found</value></data>
+  <data name="NotFound" xml:space="preserve"><value>Not Found</value></data>
   <data name="AccessibleGlobally" xml:space="preserve"><value>Accessible from any terminal</value></data>
   <data name="OnlyInInstallDir" xml:space="preserve"><value>Only in install directory</value></data>
   <data name="EverythingGood" xml:space="preserve"><value>Everything looks good! ADB and Fastboot are ready to use.</value></data>
@@ -182,9 +182,17 @@
   <data name="RunInstallHint" xml:space="preserve"><value>Run [bold]adb-installer install[/] to install ADB.</value></data>
   <data name="NoVersionApi" xml:space="preserve"><value>Google does not expose a version API — the latest build will be downloaded and installed.</value></data>
   <data name="ConfirmUpdate" xml:space="preserve"><value>Download and install the latest Platform Tools?</value></data>
-  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ Update Successful</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>Update Successful</value></data>
   <data name="PreviousVersion" xml:space="preserve"><value>Previous:</value></data>
   <data name="UpdatedVersion" xml:space="preserve"><value>Updated:</value></data>
+
+  <!-- Robustness -->
+  <data name="InsufficientDiskSpace" xml:space="preserve"><value>Not enough disk space. At least 100 MB is required.</value></data>
+  <data name="InvalidPathChars" xml:space="preserve"><value>The path contains invalid characters.</value></data>
+  <data name="DirectoryNotWritable" xml:space="preserve"><value>Cannot write to the specified directory. Check permissions.</value></data>
+  <data name="OperationCancelled" xml:space="preserve"><value>Operation cancelled.</value></data>
+  <data name="OperationTimedOut" xml:space="preserve"><value>The operation timed out. Check your internet connection and try again.</value></data>
+  <data name="DiskSpaceCheck" xml:space="preserve"><value>Checking available disk space...</value></data>
 
   <!-- Command headers -->
   <data name="VerifyHeader" xml:space="preserve"><value>ADB Verify</value></data>

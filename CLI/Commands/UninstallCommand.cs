@@ -31,21 +31,21 @@ public sealed class UninstallCommand(
         {
             RenderError(S["PermissionError"], ex.Message);
             var logPath = CrashLogger.WriteLog(ex, "uninstall");
-            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
         catch (IOException ex)
         {
             RenderError(S["FileSystemError"], ex.Message);
             var logPath = CrashLogger.WriteLog(ex, "uninstall");
-            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
         catch (Exception ex)
         {
             RenderError(S["UnexpectedError"], ex.Message);
             var logPath = CrashLogger.WriteLog(ex, "uninstall");
-            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
     }
@@ -54,22 +54,22 @@ public sealed class UninstallCommand(
     {
         var installPath = settings.InstallPath ?? platformDetector.GetDefaultInstallPath();
 
-        AnsiConsole.Write(new Rule($"[bold red]{S["UninstallHeader"]}[/]").LeftJustified().RuleStyle("grey"));
-        AnsiConsole.MarkupLine($"  [dim]{S["UninstallTitle"]}[/]");
+        AnsiConsole.Write(new Rule($"[bold {Theme.Red}]{S["UninstallHeader"]}[/]").LeftJustified().RuleStyle(Theme.Gray));
+        AnsiConsole.MarkupLine($"  [{Theme.Dim}]{S["UninstallTitle"]}[/]");
         AnsiConsole.WriteLine();
 
         if (!Directory.Exists(installPath))
         {
-            AnsiConsole.MarkupLine($"  [yellow]{S["InstallNotFoundAt"]}[/] [cyan]{Markup.Escape(installPath)}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["InstallNotFoundAt"]}[/] [{Theme.Cyan}]{Markup.Escape(installPath)}[/]");
             return 0;
         }
 
-        AnsiConsole.MarkupLine($"  [bold]{S["ThisWillRemove"]}[/] [cyan]{Markup.Escape(installPath)}[/]");
+        AnsiConsole.MarkupLine($"  [bold]{S["ThisWillRemove"]}[/] [{Theme.Cyan}]{Markup.Escape(installPath)}[/]");
         AnsiConsole.WriteLine();
 
         if (!AnsiConsole.Confirm($"  {S["ConfirmUninstall"]}", defaultValue: false))
         {
-            AnsiConsole.MarkupLine($"  [yellow]{S["UninstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["UninstallCancelled"]}[/]");
             return 0;
         }
 
@@ -77,7 +77,7 @@ public sealed class UninstallCommand(
 
         await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
-            .SpinnerStyle(Style.Parse("red"))
+            .SpinnerStyle(Style.Parse(Theme.Red))
             .StartAsync(S["Removing"], async _ =>
             {
                 if (Directory.Exists(installPath))
@@ -86,13 +86,13 @@ public sealed class UninstallCommand(
                 await Task.CompletedTask;
             });
 
-        AnsiConsole.MarkupLine($"  [green]{S["RemovedSuccess"]}[/]");
+        AnsiConsole.MarkupLine($"  [{Theme.Green}]{Theme.Ok} {S["RemovedSuccess"]}[/]");
 
         if (environmentConfigurer.IsInPath(installPath))
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine($"  [yellow]{S["PathStillReferences"]}[/]");
-            AnsiConsole.MarkupLine($"  [yellow]{S["ManuallyRemovePath"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["PathStillReferences"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["ManuallyRemovePath"]}[/]");
         }
 
         return 0;
@@ -101,10 +101,10 @@ public sealed class UninstallCommand(
     private static void RenderError(string title, string detail)
     {
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(detail)}[/]"))
-            .Header($"[red bold] {Markup.Escape(title)} [/]")
+        AnsiConsole.Write(new Panel(new Markup($"[{Theme.Red}]{Markup.Escape(detail)}[/]"))
+            .Header($"[{Theme.Red} bold] {Markup.Escape(title)} [/]")
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Red)
+            .BorderColor(Theme.RedColor)
             .Padding(1, 0)
             .Expand());
     }

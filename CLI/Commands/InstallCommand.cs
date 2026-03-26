@@ -55,10 +55,16 @@ public sealed class InstallCommand(
                 ? await RunSilentAsync(settings)
                 : await RunWizardAsync(settings);
         }
+        catch (TaskCanceledException)
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["OperationTimedOut"]}[/]");
+            return 1;
+        }
         catch (OperationCanceledException)
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine($"  [yellow]{S["InstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["OperationCancelled"]}[/]");
             return 1;
         }
         catch (HttpRequestException ex)
@@ -96,7 +102,7 @@ public sealed class InstallCommand(
     private static void WriteCrashLog(Exception ex)
     {
         var logPath = CrashLogger.WriteLog(ex, "install");
-        AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+        AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
     }
 
     private async Task<int> RunSilentAsync(Settings settings)
@@ -142,15 +148,15 @@ public sealed class InstallCommand(
 
         var existing = await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots2)
-            .SpinnerStyle(Style.Parse("dodgerblue1"))
+            .SpinnerStyle(Style.Parse(Theme.Blue))
             .StartAsync(S["CheckingExisting"],
                 async _ => await adbVerifier.VerifyAsync(existingPath));
 
         if (existing.AdbFound)
         {
-            AnsiConsole.MarkupLine($"  [yellow]{S["AdbAlreadyInstalled"]}[/] [cyan]{Markup.Escape(existing.AdbVersion ?? "unknown")}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["AdbAlreadyInstalled"]}[/] [{Theme.Cyan}]{Markup.Escape(existing.AdbVersion ?? "unknown")}[/]");
             if (existing.AdbPath is not null)
-                AnsiConsole.MarkupLine($"  [dim]Path: {Markup.Escape(existing.AdbPath)}[/]");
+                AnsiConsole.MarkupLine($"  [{Theme.Dim}]Path: {Markup.Escape(existing.AdbPath)}[/]");
             AnsiConsole.WriteLine();
 
             var choice = AnsiConsole.Prompt(
@@ -160,7 +166,7 @@ public sealed class InstallCommand(
 
             if (choice == S["Cancel"])
             {
-                AnsiConsole.MarkupLine($"  [yellow]{S["InstallCancelled"]}[/]");
+                AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["InstallCancelled"]}[/]");
                 return 0;
             }
 
@@ -182,14 +188,14 @@ public sealed class InstallCommand(
         //var arch = RuntimeInformation.OSArchitecture.ToString();
         var arch = RuntimeInformation.OSDescription.ToString() + " " + RuntimeInformation.OSArchitecture.ToString() + " " + RuntimeInformation.ProcessArchitecture.ToString() + " - " + Environment.MachineName.ToString();
 
-        var infoTable = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        var infoTable = new Table().Border(TableBorder.Rounded).BorderColor(Theme.GrayColor);
         infoTable.AddColumn(new TableColumn($"[bold]{S["Property"]}[/]").NoWrap().PadRight(2));
         infoTable.AddColumn($"[bold]{S["Value"]}[/]");
-        infoTable.AddRow(S["OS"], $"[cyan]{osLabel}[/]");
-        infoTable.AddRow(S["Architecture"], $"[cyan]{arch}[/]");
-        infoTable.AddRow(S["PlatformToolsUrl"], $"[dim]{Markup.Escape(platform.PlatformToolsUrl)}[/]");
+        infoTable.AddRow(S["OS"], $"[{Theme.Cyan}]{osLabel}[/]");
+        infoTable.AddRow(S["Architecture"], $"[{Theme.Cyan}]{arch}[/]");
+        infoTable.AddRow(S["PlatformToolsUrl"], $"[{Theme.Dim}]{Markup.Escape(platform.PlatformToolsUrl)}[/]");
         if (platform.UsbDriverUrl is not null)
-            infoTable.AddRow(S["UsbDriverUrl"], $"[dim]{Markup.Escape(platform.UsbDriverUrl)}[/]");
+            infoTable.AddRow(S["UsbDriverUrl"], $"[{Theme.Dim}]{Markup.Escape(platform.UsbDriverUrl)}[/]");
         AnsiConsole.Write(infoTable);
         AnsiConsole.WriteLine();
 
@@ -220,7 +226,7 @@ public sealed class InstallCommand(
 
         if (!installPlatformTools)
         {
-            AnsiConsole.MarkupLine($"[yellow]{S["PlatformToolsRequired"]}[/]");
+            AnsiConsole.MarkupLine($"[{Theme.Amber}]{S["PlatformToolsRequired"]}[/]");
             return 0;
         }
 
@@ -239,7 +245,7 @@ public sealed class InstallCommand(
             : InstallLevel.User;
 
         if (installLevel == InstallLevel.System)
-            AnsiConsole.MarkupLine($"[yellow]{S["AdminRequired"]}[/]");
+            AnsiConsole.MarkupLine($"[{Theme.Amber}]{S["AdminRequired"]}[/]");
 
         AnsiConsole.WriteLine();
 
@@ -247,10 +253,10 @@ public sealed class InstallCommand(
         WriteStep(4, S["StepInstallPath"]);
 
         var defaultPath = platformDetector.GetDefaultInstallPath(installLevel);
-        AnsiConsole.MarkupLine($"[dim]{S["DefaultInstallPath"]}:[/] [cyan]{Markup.Escape(defaultPath)}[/]");
+        AnsiConsole.MarkupLine($"[{Theme.Dim}]{S["DefaultInstallPath"]}:[/] [{Theme.Cyan}]{Markup.Escape(defaultPath)}[/]");
 
         var useDefault = AnsiConsole.Confirm(
-            S.Format("ConfirmInstallPath", $"[cyan]{Markup.Escape(defaultPath)}[/]"), defaultValue: true);
+            S.Format("ConfirmInstallPath", $"[{Theme.Cyan}]{Markup.Escape(defaultPath)}[/]"), defaultValue: true);
 
         var installPath = useDefault
             ? defaultPath
@@ -260,34 +266,52 @@ public sealed class InstallCommand(
                     {
                         var parent = Path.GetDirectoryName(p);
                         if (string.IsNullOrWhiteSpace(parent))
-                            return ValidationResult.Error($"[red]{S["ParentDirNotExist"]}[/]");
+                            return ValidationResult.Error($"[{Theme.Red}]{S["ParentDirNotExist"]}[/]");
+                        if (p.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+                            return ValidationResult.Error($"[{Theme.Red}]{S["InvalidPathChars"]}[/]");
                         return Directory.Exists(parent) || Directory.Exists(Path.GetPathRoot(p))
                             ? ValidationResult.Success()
-                            : ValidationResult.Error($"[red]{S["ParentDirNotExist"]}[/]");
+                            : ValidationResult.Error($"[{Theme.Red}]{S["ParentDirNotExist"]}[/]");
                     }));
 
         AnsiConsole.WriteLine();
 
+        // ── Pre-flight: disk space check ────────────────────────
+        try
+        {
+            var pathRoot = Path.GetPathRoot(installPath);
+            if (pathRoot is not null)
+            {
+                var drive = new DriveInfo(pathRoot);
+                if (drive.IsReady && drive.AvailableFreeSpace < 100 * 1024 * 1024)
+                {
+                    AnsiConsole.MarkupLine($"  [{Theme.Red}]{S["InsufficientDiskSpace"]}[/]");
+                    return 1;
+                }
+            }
+        }
+        catch { /* DriveInfo may fail on network paths — proceed anyway */ }
+
         // ── Step 5 — Summary ────────────────────────────────────
         WriteStep(5, S["StepSummary"]);
 
-        var summary = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        var summary = new Table().Border(TableBorder.Rounded).BorderColor(Theme.GrayColor);
         summary.AddColumn(new TableColumn($"[bold]{S["Component"]}[/]").PadRight(2));
         summary.AddColumn(new TableColumn($"[bold]{S["Action"]}[/]"));
-        summary.AddRow(S["ComponentPlatformTools"], $"[green]{S["Install"]}[/]");
-        summary.AddRow(S["InstallPath"], $"[cyan]{Markup.Escape(installPath)}[/]");
+        summary.AddRow(S["ComponentPlatformTools"], $"[{Theme.Green}]{S["Install"]}[/]");
+        summary.AddRow(S["InstallPath"], $"[{Theme.Cyan}]{Markup.Escape(installPath)}[/]");
         summary.AddRow(S["Level"], installLevel == InstallLevel.System
-            ? $"[yellow]{S["SystemLevel"]}[/]"
-            : $"[green]{S["UserLevel"]}[/]");
-        summary.AddRow("PATH", addToPath ? $"[green]{S["Yes"]}[/]" : $"[grey]{S["Skip"]}[/]");
-        summary.AddRow(S["ComponentUsbDrivers"], installDrivers ? $"[green]{S["Install"]}[/]" : $"[grey]{S["Skip"]}[/]");
-        summary.AddRow(S["ComponentVerify"], verify ? $"[green]{S["Yes"]}[/]" : $"[grey]{S["Skip"]}[/]");
+            ? $"[{Theme.Amber}]{S["SystemLevel"]}[/]"
+            : $"[{Theme.Green}]{S["UserLevel"]}[/]");
+        summary.AddRow("PATH", addToPath ? $"[{Theme.Green}]{S["Yes"]}[/]" : $"[{Theme.Gray}]{S["Skip"]}[/]");
+        summary.AddRow(S["ComponentUsbDrivers"], installDrivers ? $"[{Theme.Green}]{S["Install"]}[/]" : $"[{Theme.Gray}]{S["Skip"]}[/]");
+        summary.AddRow(S["ComponentVerify"], verify ? $"[{Theme.Green}]{S["Yes"]}[/]" : $"[{Theme.Gray}]{S["Skip"]}[/]");
         AnsiConsole.Write(summary);
         AnsiConsole.WriteLine();
 
         if (!AnsiConsole.Confirm($"[bold]{S["StartInstallation"]}[/]"))
         {
-            AnsiConsole.MarkupLine($"[yellow]{S["InstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"[{Theme.Amber}]{S["InstallCancelled"]}[/]");
             return 0;
         }
 
@@ -312,15 +336,11 @@ public sealed class InstallCommand(
                 new SpinnerColumn(),
                 new TaskDescriptionColumn { Alignment = Justify.Left },
                 new ProgressBarColumn(),
-                new PercentageColumn(),
-                new RemainingTimeColumn(),
-                new TransferSpeedColumn())
+                new PercentageColumn())
             .StartAsync(async ctx =>
             {
-                // Create all possible progress tasks up-front so they can be
-                // safely referenced from callbacks without restarting stopped tasks.
-                var dlPlatformTask = ctx.AddTask($"[green]{S["DownloadingPlatformTools"]}[/]", maxValue: 100);
-                var exPlatformTask = ctx.AddTask($"[blue]{S["ExtractingFiles"]}[/]", maxValue: 100);
+                var dlPlatformTask = ctx.AddTask($"[{Theme.Green}]{S["DownloadingPlatformTools"]}[/]", maxValue: 100);
+                var exPlatformTask = ctx.AddTask($"[{Theme.Blue}]{S["ExtractingFiles"]}[/]", maxValue: 100);
                 exPlatformTask.IsIndeterminate = true;
 
                 ProgressTask? dlUsbTask = null;
@@ -329,24 +349,24 @@ public sealed class InstallCommand(
 
                 if (installDrivers)
                 {
-                    dlUsbTask = ctx.AddTask($"[green]{S["DownloadingUsbDrivers"]}[/]", maxValue: 100, autoStart: false);
-                    exUsbTask = ctx.AddTask($"[blue]{S["ExtractingUsbDrivers"]}[/]", maxValue: 100, autoStart: false);
+                    dlUsbTask = ctx.AddTask($"[{Theme.Green}]{S["DownloadingUsbDrivers"]}[/]", maxValue: 100, autoStart: false);
+                    exUsbTask = ctx.AddTask($"[{Theme.Blue}]{S["ExtractingUsbDrivers"]}[/]", maxValue: 100, autoStart: false);
                     exUsbTask.IsIndeterminate = true;
-                    drvInstallTask = ctx.AddTask($"[yellow]{S["InstallingUsbDrivers"]}[/]", autoStart: false);
+                    drvInstallTask = ctx.AddTask($"[{Theme.Amber}]{S["InstallingUsbDrivers"]}[/]", autoStart: false);
                     drvInstallTask.IsIndeterminate = true;
                 }
 
                 ProgressTask? pathTask = null;
                 if (addToPath)
                 {
-                    pathTask = ctx.AddTask($"[magenta]{S["ConfiguringPath"]}[/]", autoStart: false, maxValue: 100);
+                    pathTask = ctx.AddTask($"[{Theme.Cyan}]{S["ConfiguringPath"]}[/]", autoStart: false, maxValue: 100);
                     pathTask.IsIndeterminate = true;
                 }
 
                 ProgressTask? verTask = null;
                 if (verify)
                 {
-                    verTask = ctx.AddTask($"[cyan]{S["VerifyingInstallation"]}[/]", autoStart: false, maxValue: 100);
+                    verTask = ctx.AddTask($"[{Theme.Blue}]{S["VerifyingInstallation"]}[/]", autoStart: false, maxValue: 100);
                     verTask.IsIndeterminate = true;
                 }
 
@@ -399,9 +419,9 @@ public sealed class InstallCommand(
                 var installResult = await orchestrator.InstallAsync(options);
 
                 // Finish any remaining indeterminate tasks on completion
-                StopIfRunning(drvInstallTask);
-                StopIfRunning(pathTask);
-                StopIfRunning(verTask);
+                FinishTask(drvInstallTask);
+                FinishTask(pathTask);
+                FinishTask(verTask);
 
                 return installResult;
             });
@@ -437,7 +457,7 @@ public sealed class InstallCommand(
 
     private enum InstallPhase { DownloadPlatformTools, DownloadUsbDrivers, ExtractUsbDrivers }
 
-    private static void StopIfRunning(ProgressTask? task)
+    private static void FinishTask(ProgressTask? task)
     {
         if (task is not null && !task.IsFinished)
         {
@@ -449,25 +469,25 @@ public sealed class InstallCommand(
 
     private static void RenderHeader()
     {
-        AnsiConsole.Write(new Rule($"[bold dodgerblue1]ADB/USB Latest Driver Installer[/]").LeftJustified().RuleStyle("dodgerblue1"));
-        AnsiConsole.MarkupLine($"  [dim]{S["AppSubtitle"]}[/]");
-        AnsiConsole.MarkupLine($"  [dim]{S.Format("LanguageDetected", S.LanguageName)}[/]");
+        AnsiConsole.Write(new Rule($"[bold {Theme.Blue}]ADB/USB Latest Driver Installer[/]").LeftJustified().RuleStyle(Theme.Blue));
+        AnsiConsole.MarkupLine($"  [{Theme.Dim}]{S["AppSubtitle"]}[/]");
+        AnsiConsole.MarkupLine($"  [{Theme.Dim}]{S.Format("LanguageDetected", S.LanguageName)}[/]");
         AnsiConsole.WriteLine();
     }
 
     private static void WriteStep(int step, string title)
     {
-        AnsiConsole.Write(new Rule($"[bold dodgerblue1][[{step}]][/] [white]{title}[/]").LeftJustified().RuleStyle("grey"));
+        AnsiConsole.Write(new Rule($"[bold {Theme.Blue}][[{step}]][/] [white]{title}[/]").LeftJustified().RuleStyle(Theme.Gray));
         AnsiConsole.WriteLine();
     }
 
     private static void RenderError(string title, string detail)
     {
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(detail)}[/]"))
-            .Header($"[red bold] {Markup.Escape(title)} [/]")
+        AnsiConsole.Write(new Panel(new Markup($"[{Theme.Red}]{Markup.Escape(detail)}[/]"))
+            .Header($"[{Theme.Red} bold] {Markup.Escape(title)} [/]")
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Red)
+            .BorderColor(Theme.RedColor)
             .Padding(1, 0)
             .Expand());
     }
@@ -487,22 +507,22 @@ public sealed class InstallCommand(
         grid.AddColumn(new GridColumn().PadRight(2));
         grid.AddColumn();
 
-        grid.AddRow($"[dim]{S["Path"]}:[/]", $"[cyan]{Markup.Escape(result.PlatformToolsPath ?? "—")}[/]");
+        grid.AddRow($"[{Theme.Dim}]{S["Path"]}:[/]", $"[{Theme.Cyan}]{Markup.Escape(result.PlatformToolsPath ?? Theme.Dash)}[/]");
         if (result.AdbVersion is not null)
-            grid.AddRow("[dim]ADB:[/]", $"[green]{Markup.Escape(result.AdbVersion)}[/]");
+            grid.AddRow($"[{Theme.Dim}]ADB:[/]", $"[{Theme.Green}]{Markup.Escape(result.AdbVersion)}[/]");
         if (result.FastbootVersion is not null)
-            grid.AddRow("[dim]Fastboot:[/]", $"[green]{Markup.Escape(result.FastbootVersion)}[/]");
-        grid.AddRow("[dim]PATH:[/]", result.PathConfigured
-            ? $"[green]{S["AddedToPath"]}[/]"
-            : $"[grey]{S["PathNotModified"]}[/]");
-        grid.AddRow($"[dim]{S["ComponentUsbDrivers"]}:[/]", result.UsbDriversInstalled
-            ? $"[green]{S["UsbDriversInstalled"]}[/]"
-            : $"[grey]{S["UsbDriversSkipped"]}[/]");
+            grid.AddRow($"[{Theme.Dim}]Fastboot:[/]", $"[{Theme.Green}]{Markup.Escape(result.FastbootVersion)}[/]");
+        grid.AddRow($"[{Theme.Dim}]PATH:[/]", result.PathConfigured
+            ? $"[{Theme.Green}]{Theme.Ok} {S["AddedToPath"]}[/]"
+            : $"[{Theme.Gray}]{Theme.Dash} {S["PathNotModified"]}[/]");
+        grid.AddRow($"[{Theme.Dim}]{S["ComponentUsbDrivers"]}:[/]", result.UsbDriversInstalled
+            ? $"[{Theme.Green}]{Theme.Ok} {S["UsbDriversInstalled"]}[/]"
+            : $"[{Theme.Gray}]{Theme.Dash} {S["UsbDriversSkipped"]}[/]");
 
         AnsiConsole.Write(new Panel(grid)
-            .Header($"[green bold] {S["InstallSuccessful"]} [/]")
+            .Header($"[{Theme.Green} bold] {Theme.Ok} {S["InstallSuccessful"]} [/]")
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Green)
+            .BorderColor(Theme.GreenColor)
             .Padding(1, 0)
             .Expand());
     }
@@ -513,18 +533,18 @@ public sealed class InstallCommand(
         tips.AddColumn(new GridColumn().PadRight(1));
         tips.AddColumn();
 
-        tips.AddRow("[yellow]1.[/]", result.PathConfigured
+        tips.AddRow($"[{Theme.Amber}]1.[/]", result.PathConfigured
             ? $"[white]{S["NextStepOpenTerminal"]}[/]"
             : $"[white]{S["NextStepAddPathManual"]}[/]");
-        tips.AddRow("[yellow]2.[/]", $"[white]{S["NextStepUsbDebugging"]}[/]");
-        tips.AddRow("[yellow]3.[/]", $"[white]{S["NextStepAdbDevices"]}[/]");
-        tips.AddRow("[yellow]4.[/]", $"[white]{S["NextStepVerify"]}[/]");
-        tips.AddRow("[yellow]5.[/]", $"[white]{S["NextStepUpdate"]}[/]");
+        tips.AddRow($"[{Theme.Amber}]2.[/]", $"[white]{S["NextStepUsbDebugging"]}[/]");
+        tips.AddRow($"[{Theme.Amber}]3.[/]", $"[white]{S["NextStepAdbDevices"]}[/]");
+        tips.AddRow($"[{Theme.Amber}]4.[/]", $"[white]{S["NextStepVerify"]}[/]");
+        tips.AddRow($"[{Theme.Amber}]5.[/]", $"[white]{S["NextStepUpdate"]}[/]");
 
         AnsiConsole.Write(new Panel(tips)
-            .Header($"[dodgerblue1 bold] {S["NextStepsHeader"]} [/]")
+            .Header($"[{Theme.Blue} bold] {S["NextStepsHeader"]} [/]")
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.DodgerBlue1)
+            .BorderColor(Theme.BlueColor)
             .Padding(1, 0)
             .Expand());
     }
@@ -533,7 +553,7 @@ public sealed class InstallCommand(
     {
         if (action == S["OpenNewTerminal"])
         {
-            AnsiConsole.MarkupLine($"[dim]{S["OpeningTerminal"]}[/]");
+            AnsiConsole.MarkupLine($"[{Theme.Dim}]{S["OpeningTerminal"]}[/]");
             try
             {
                 if (OperatingSystem.IsWindows())
@@ -545,7 +565,7 @@ public sealed class InstallCommand(
             }
             catch
             {
-                AnsiConsole.MarkupLine($"[yellow]{S["CouldNotOpenTerminal"]}[/]");
+                AnsiConsole.MarkupLine($"[{Theme.Amber}]{S["CouldNotOpenTerminal"]}[/]");
             }
 
             return 0;
@@ -553,8 +573,8 @@ public sealed class InstallCommand(
 
         if (action == S["RestartComputer"])
         {
-            AnsiConsole.MarkupLine($"[bold red]{S["SystemRestartIn"]}[/]");
-            AnsiConsole.MarkupLine($"[dim]{S["PressCancelRestart"]}[/]");
+            AnsiConsole.MarkupLine($"[bold {Theme.Red}]{S["SystemRestartIn"]}[/]");
+            AnsiConsole.MarkupLine($"[{Theme.Dim}]{S["PressCancelRestart"]}[/]");
 
             try
             {
@@ -565,13 +585,13 @@ public sealed class InstallCommand(
             }
             catch
             {
-                AnsiConsole.MarkupLine($"[yellow]{S["CouldNotRestart"]}[/]");
+                AnsiConsole.MarkupLine($"[{Theme.Amber}]{S["CouldNotRestart"]}[/]");
             }
 
             return 0;
         }
 
-        AnsiConsole.MarkupLine($"[green]{S["DoneOpenTerminal"]}[/]");
+        AnsiConsole.MarkupLine($"[{Theme.Green}]{S["DoneOpenTerminal"]}[/]");
         return 0;
     }
 }

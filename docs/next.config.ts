@@ -15,7 +15,12 @@ const nextConfig: NextConfig = {
 
   images: {
     unoptimized: true,
-  }
+  },
+
+  // Lo necesito solo en local en producción uso GitHub Pages, que no soporta HTTPS para dominios personalizados, así que no puedo usar TLS certs.
+  // experimental: {
+  //   turbopackUseSystemTlsCerts: true,
+  // },
 };
 
 export default nextConfig;

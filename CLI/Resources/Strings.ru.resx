@@ -89,13 +89,13 @@
   <data name="ConfiguringPath" xml:space="preserve"><value>Настройка PATH</value></data>
   <data name="VerifyingInstallation" xml:space="preserve"><value>Проверка установки</value></data>
 
-  <data name="InstallSuccessful" xml:space="preserve"><value>✓ Установка успешна</value></data>
+  <data name="InstallSuccessful" xml:space="preserve"><value>Установка успешна</value></data>
   <data name="Details" xml:space="preserve"><value>Детали</value></data>
   <data name="Path" xml:space="preserve"><value>Путь</value></data>
   <data name="Status" xml:space="preserve"><value>Статус</value></data>
-  <data name="AddedToPath" xml:space="preserve"><value>✓ Добавлено в PATH</value></data>
+  <data name="AddedToPath" xml:space="preserve"><value>Добавлено в PATH</value></data>
   <data name="PathNotModified" xml:space="preserve"><value>— PATH не изменён</value></data>
-  <data name="UsbDriversInstalled" xml:space="preserve"><value>✓ USB-драйверы установлены</value></data>
+  <data name="UsbDriversInstalled" xml:space="preserve"><value>USB-драйверы установлены</value></data>
   <data name="UsbDriversSkipped" xml:space="preserve"><value>— USB-драйверы пропущены или Н/Д</value></data>
   <data name="InstallFailed" xml:space="preserve"><value>Ошибка установки</value></data>
   <data name="UnknownError" xml:space="preserve"><value>Неизвестная ошибка</value></data>
@@ -113,8 +113,8 @@
 
   <data name="VerificationTitle" xml:space="preserve"><value>Проверка установки ADB</value></data>
   <data name="ScanningAdb" xml:space="preserve"><value>Поиск ADB &amp; Fastboot...</value></data>
-  <data name="Found" xml:space="preserve"><value>✓ Найден</value></data>
-  <data name="NotFound" xml:space="preserve"><value>✗ Не найден</value></data>
+  <data name="Found" xml:space="preserve"><value>Найден</value></data>
+  <data name="NotFound" xml:space="preserve"><value>Не найден</value></data>
   <data name="AccessibleGlobally" xml:space="preserve"><value>Доступен из любого терминала</value></data>
   <data name="OnlyInInstallDir" xml:space="preserve"><value>Только в каталоге установки</value></data>
   <data name="EverythingGood" xml:space="preserve"><value>Всё в порядке! ADB и Fastboot готовы к использованию.</value></data>
@@ -167,9 +167,17 @@
   <data name="RunInstallHint" xml:space="preserve"><value>Выполните [bold]adb-installer install[/] для установки ADB.</value></data>
   <data name="NoVersionApi" xml:space="preserve"><value>Google не предоставляет API версий — будет загружена и установлена последняя сборка.</value></data>
   <data name="ConfirmUpdate" xml:space="preserve"><value>Загрузить и установить последние Platform Tools?</value></data>
-  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ Обновление выполнено</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>Обновление выполнено</value></data>
   <data name="PreviousVersion" xml:space="preserve"><value>Предыдущая:</value></data>
   <data name="UpdatedVersion" xml:space="preserve"><value>Обновлённая:</value></data>
+
+  <!-- Robustness -->
+  <data name="InsufficientDiskSpace" xml:space="preserve"><value>Недостаточно места на диске. Требуется не менее 100 МБ.</value></data>
+  <data name="InvalidPathChars" xml:space="preserve"><value>Путь содержит недопустимые символы.</value></data>
+  <data name="DirectoryNotWritable" xml:space="preserve"><value>Не удаётся записать в указанный каталог. Проверьте разрешения.</value></data>
+  <data name="OperationCancelled" xml:space="preserve"><value>Операция отменена.</value></data>
+  <data name="OperationTimedOut" xml:space="preserve"><value>Время операции истекло. Проверьте подключение к Интернету и повторите попытку.</value></data>
+  <data name="DiskSpaceCheck" xml:space="preserve"><value>Проверка доступного места на диске...</value></data>
 
   <!-- Command headers -->
   <data name="VerifyHeader" xml:space="preserve"><value>Проверка ADB</value></data>

@@ -6,6 +6,7 @@ using AdbDriverInstaller.Core.Models;
 using AdbDriverInstaller.Infrastructure.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.Net.Http;
 
 namespace AdbDriverInstaller.CLI.Commands;
 
@@ -22,44 +23,62 @@ public sealed class UpdateCommand(
         {
             return await RunUpdateAsync();
         }
+        catch (TaskCanceledException)
+        {
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["OperationTimedOut"]}[/]");
+            return 1;
+        }
         catch (OperationCanceledException)
         {
-            AnsiConsole.MarkupLine($"  [yellow]{S["InstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["OperationCancelled"]}[/]");
+            return 1;
+        }
+        catch (HttpRequestException ex)
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Panel(new Markup($"[{Theme.Red}]{Markup.Escape(ex.Message)}[/]"))
+                .Header($"[{Theme.Red} bold] {S["NetworkError"]} [/]")
+                .Border(BoxBorder.Rounded)
+                .BorderColor(Theme.RedColor)
+                .Padding(1, 0)
+                .Expand());
+            var logPath = CrashLogger.WriteLog(ex, "update");
+            AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
         catch (Exception ex)
         {
             AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(ex.Message)}[/]"))
-                .Header($"[red bold] {S["UnexpectedError"]} [/]")
+            AnsiConsole.Write(new Panel(new Markup($"[{Theme.Red}]{Markup.Escape(ex.Message)}[/]"))
+                .Header($"[{Theme.Red} bold] {S["UnexpectedError"]} [/]")
                 .Border(BoxBorder.Rounded)
-                .BorderColor(Color.Red)
+                .BorderColor(Theme.RedColor)
                 .Padding(1, 0)
                 .Expand());
             var logPath = CrashLogger.WriteLog(ex, "update");
-            AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
             return 1;
         }
     }
 
     private async Task<int> RunUpdateAsync()
     {
-        AnsiConsole.Write(new Rule($"[bold dodgerblue1]{S["UpdateTitle"]}[/]").LeftJustified().RuleStyle("grey"));
-        AnsiConsole.MarkupLine($"  [dim]{S["UpdateSubtitle"]}[/]");
+        AnsiConsole.Write(new Rule($"[bold {Theme.Blue}]{S["UpdateTitle"]}[/]").LeftJustified().RuleStyle(Theme.Gray));
+        AnsiConsole.MarkupLine($"  [{Theme.Dim}]{S["UpdateSubtitle"]}[/]");
         AnsiConsole.WriteLine();
 
         // 1. Find current installation
         var defaultPath = platformDetector.GetDefaultInstallPath();
         var current = await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots2)
-            .SpinnerStyle(Style.Parse("dodgerblue1"))
+            .SpinnerStyle(Style.Parse(Theme.Blue))
             .StartAsync(S["CheckingInstallation"],
                 async _ => await adbVerifier.VerifyAsync(defaultPath));
 
         if (!current.AdbFound)
         {
-            AnsiConsole.MarkupLine($"  [yellow]{S["NoExistingInstall"]}[/]");
-            AnsiConsole.MarkupLine($"  [dim]{S["RunInstallHint"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["NoExistingInstall"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Dim}]{S["RunInstallHint"]}[/]");
             return 1;
         }
 
@@ -68,21 +87,21 @@ public sealed class UpdateCommand(
             : defaultPath;
 
         // 2. Show current version
-        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Theme.GrayColor);
         table.AddColumn(new TableColumn($"[bold]{S["Component"]}[/]").PadRight(2));
         table.AddColumn($"[bold]{S["CurrentVersion"]}[/]");
-        table.AddRow("ADB", $"[cyan]{Markup.Escape(current.AdbVersion ?? "unknown")}[/]");
-        table.AddRow("Fastboot", $"[cyan]{Markup.Escape(current.FastbootVersion ?? "unknown")}[/]");
-        table.AddRow(S["InstallPath"], $"[dim]{Markup.Escape(installPath)}[/]");
+        table.AddRow("ADB", $"[{Theme.Cyan}]{Markup.Escape(current.AdbVersion ?? "unknown")}[/]");
+        table.AddRow("Fastboot", $"[{Theme.Cyan}]{Markup.Escape(current.FastbootVersion ?? "unknown")}[/]");
+        table.AddRow(S["InstallPath"], $"[{Theme.Dim}]{Markup.Escape(installPath)}[/]");
         AnsiConsole.Write(table);
         AnsiConsole.WriteLine();
 
-        AnsiConsole.MarkupLine($"  [dim]{S["NoVersionApi"]}[/]");
+        AnsiConsole.MarkupLine($"  [{Theme.Dim}]{S["NoVersionApi"]}[/]");
         AnsiConsole.WriteLine();
 
         if (!AnsiConsole.Confirm($"[bold]{S["ConfirmUpdate"]}[/]"))
         {
-            AnsiConsole.MarkupLine($"  [yellow]{S["InstallCancelled"]}[/]");
+            AnsiConsole.MarkupLine($"  [{Theme.Amber}]{S["InstallCancelled"]}[/]");
             return 0;
         }
 
@@ -105,14 +124,13 @@ public sealed class UpdateCommand(
                 new SpinnerColumn(),
                 new TaskDescriptionColumn { Alignment = Justify.Left },
                 new ProgressBarColumn(),
-                new PercentageColumn(),
-                new RemainingTimeColumn())
+                new PercentageColumn())
             .StartAsync(async ctx =>
             {
-                var dlTask = ctx.AddTask($"[green]{S["DownloadingPlatformTools"]}[/]", maxValue: 100);
-                var exTask = ctx.AddTask($"[blue]{S["ExtractingFiles"]}[/]", maxValue: 100);
+                var dlTask = ctx.AddTask($"[{Theme.Green}]{S["DownloadingPlatformTools"]}[/]", maxValue: 100);
+                var exTask = ctx.AddTask($"[{Theme.Blue}]{S["ExtractingFiles"]}[/]", maxValue: 100);
                 exTask.IsIndeterminate = true;
-                var verTask = ctx.AddTask($"[cyan]{S["VerifyingInstallation"]}[/]", autoStart: false, maxValue: 100);
+                var verTask = ctx.AddTask($"[{Theme.Blue}]{S["VerifyingInstallation"]}[/]", autoStart: false, maxValue: 100);
                 verTask.IsIndeterminate = true;
 
                 orchestrator.DownloadProgress = new Progress<double>(v =>
@@ -154,24 +172,24 @@ public sealed class UpdateCommand(
             grid.AddColumn(new GridColumn().PadRight(2));
             grid.AddColumn();
 
-            grid.AddRow($"[dim]{S["PreviousVersion"]}[/]", $"[grey]{Markup.Escape(current.AdbVersion ?? "unknown")}[/]");
-            grid.AddRow($"[dim]{S["UpdatedVersion"]}[/]", $"[green]{Markup.Escape(result.AdbVersion ?? "latest")}[/]");
-            grid.AddRow($"[dim]{S["Path"]}:[/]", $"[cyan]{Markup.Escape(result.PlatformToolsPath ?? installPath)}[/]");
+            grid.AddRow($"[{Theme.Dim}]{S["PreviousVersion"]}[/]", $"[{Theme.Gray}]{Markup.Escape(current.AdbVersion ?? "unknown")}[/]");
+            grid.AddRow($"[{Theme.Dim}]{S["UpdatedVersion"]}[/]", $"[{Theme.Green}]{Markup.Escape(result.AdbVersion ?? "latest")}[/]");
+            grid.AddRow($"[{Theme.Dim}]{S["Path"]}:[/]", $"[{Theme.Cyan}]{Markup.Escape(result.PlatformToolsPath ?? installPath)}[/]");
 
             AnsiConsole.Write(new Panel(grid)
-                .Header($"[green bold] {S["UpdateSuccessful"]} [/]")
+                .Header($"[{Theme.Green} bold] {Theme.Ok} {S["UpdateSuccessful"]} [/]")
                 .Border(BoxBorder.Rounded)
-                .BorderColor(Color.Green)
+                .BorderColor(Theme.GreenColor)
                 .Padding(1, 0)
                 .Expand());
 
             return 0;
         }
 
-        AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(result.ErrorMessage ?? S["UnknownError"])}[/]"))
-            .Header($"[red bold] {S["InstallFailed"]} [/]")
+        AnsiConsole.Write(new Panel(new Markup($"[{Theme.Red}]{Markup.Escape(result.ErrorMessage ?? S["UnknownError"])}[/]"))
+            .Header($"[{Theme.Red} bold] {S["InstallFailed"]} [/]")
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Red)
+            .BorderColor(Theme.RedColor)
             .Padding(1, 0)
             .Expand());
 

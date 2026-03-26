@@ -89,13 +89,13 @@
   <data name="ConfiguringPath" xml:space="preserve"><value>Configurando PATH</value></data>
   <data name="VerifyingInstallation" xml:space="preserve"><value>Verificando instalação</value></data>
 
-  <data name="InstallSuccessful" xml:space="preserve"><value>✓ Instalação bem-sucedida</value></data>
+  <data name="InstallSuccessful" xml:space="preserve"><value>Instalação bem-sucedida</value></data>
   <data name="Details" xml:space="preserve"><value>Detalhes</value></data>
   <data name="Path" xml:space="preserve"><value>Caminho</value></data>
   <data name="Status" xml:space="preserve"><value>Estado</value></data>
-  <data name="AddedToPath" xml:space="preserve"><value>✓ Adicionado ao PATH</value></data>
+  <data name="AddedToPath" xml:space="preserve"><value>Adicionado ao PATH</value></data>
   <data name="PathNotModified" xml:space="preserve"><value>— PATH não modificado</value></data>
-  <data name="UsbDriversInstalled" xml:space="preserve"><value>✓ Drivers USB instalados</value></data>
+  <data name="UsbDriversInstalled" xml:space="preserve"><value>Drivers USB instalados</value></data>
   <data name="UsbDriversSkipped" xml:space="preserve"><value>— Drivers USB ignorados ou N/D</value></data>
   <data name="InstallFailed" xml:space="preserve"><value>Falha na instalação</value></data>
   <data name="UnknownError" xml:space="preserve"><value>Erro desconhecido</value></data>
@@ -113,8 +113,8 @@
 
   <data name="VerificationTitle" xml:space="preserve"><value>Verificação da instalação do ADB</value></data>
   <data name="ScanningAdb" xml:space="preserve"><value>Procurando ADB &amp; Fastboot...</value></data>
-  <data name="Found" xml:space="preserve"><value>✓ Encontrado</value></data>
-  <data name="NotFound" xml:space="preserve"><value>✗ Não encontrado</value></data>
+  <data name="Found" xml:space="preserve"><value>Encontrado</value></data>
+  <data name="NotFound" xml:space="preserve"><value>Não encontrado</value></data>
   <data name="AccessibleGlobally" xml:space="preserve"><value>Acessível de qualquer terminal</value></data>
   <data name="OnlyInInstallDir" xml:space="preserve"><value>Apenas no diretório de instalação</value></data>
   <data name="EverythingGood" xml:space="preserve"><value>Tudo certo! ADB e Fastboot estão prontos para uso.</value></data>
@@ -167,9 +167,17 @@
   <data name="RunInstallHint" xml:space="preserve"><value>Execute [bold]adb-installer install[/] para instalar o ADB.</value></data>
   <data name="NoVersionApi" xml:space="preserve"><value>O Google não disponibiliza uma API de versão — a compilação mais recente será baixada e instalada.</value></data>
   <data name="ConfirmUpdate" xml:space="preserve"><value>Baixar e instalar os Platform Tools mais recentes?</value></data>
-  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ Atualização bem-sucedida</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>Atualização bem-sucedida</value></data>
   <data name="PreviousVersion" xml:space="preserve"><value>Anterior:</value></data>
   <data name="UpdatedVersion" xml:space="preserve"><value>Atualizado:</value></data>
+
+  <!-- Robustness -->
+  <data name="InsufficientDiskSpace" xml:space="preserve"><value>Espaço em disco insuficiente. São necessários pelo menos 100 MB.</value></data>
+  <data name="InvalidPathChars" xml:space="preserve"><value>O caminho contém caracteres inválidos.</value></data>
+  <data name="DirectoryNotWritable" xml:space="preserve"><value>Não é possível gravar no diretório especificado. Verifique as permissões.</value></data>
+  <data name="OperationCancelled" xml:space="preserve"><value>Operação cancelada.</value></data>
+  <data name="OperationTimedOut" xml:space="preserve"><value>A operação expirou. Verifique sua conexão com a Internet e tente novamente.</value></data>
+  <data name="DiskSpaceCheck" xml:space="preserve"><value>Verificando espaço em disco disponível...</value></data>
 
   <!-- Command headers -->
   <data name="VerifyHeader" xml:space="preserve"><value>Verificação do ADB</value></data>

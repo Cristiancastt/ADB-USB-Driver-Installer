@@ -89,13 +89,13 @@
   <data name="ConfiguringPath" xml:space="preserve"><value>正在配置 PATH</value></data>
   <data name="VerifyingInstallation" xml:space="preserve"><value>正在验证安装</value></data>
 
-  <data name="InstallSuccessful" xml:space="preserve"><value>✓ 安装成功</value></data>
+  <data name="InstallSuccessful" xml:space="preserve"><value>安装成功</value></data>
   <data name="Details" xml:space="preserve"><value>详情</value></data>
   <data name="Path" xml:space="preserve"><value>路径</value></data>
   <data name="Status" xml:space="preserve"><value>状态</value></data>
-  <data name="AddedToPath" xml:space="preserve"><value>✓ 已添加到 PATH</value></data>
+  <data name="AddedToPath" xml:space="preserve"><value>已添加到 PATH</value></data>
   <data name="PathNotModified" xml:space="preserve"><value>— PATH 未修改</value></data>
-  <data name="UsbDriversInstalled" xml:space="preserve"><value>✓ USB 驱动已安装</value></data>
+  <data name="UsbDriversInstalled" xml:space="preserve"><value>USB 驱动已安装</value></data>
   <data name="UsbDriversSkipped" xml:space="preserve"><value>— USB 驱动已跳过或不适用</value></data>
   <data name="InstallFailed" xml:space="preserve"><value>安装失败</value></data>
   <data name="UnknownError" xml:space="preserve"><value>未知错误</value></data>
@@ -113,8 +113,8 @@
 
   <data name="VerificationTitle" xml:space="preserve"><value>ADB 安装验证</value></data>
   <data name="ScanningAdb" xml:space="preserve"><value>正在搜索 ADB 和 Fastboot...</value></data>
-  <data name="Found" xml:space="preserve"><value>✓ 已找到</value></data>
-  <data name="NotFound" xml:space="preserve"><value>✗ 未找到</value></data>
+  <data name="Found" xml:space="preserve"><value>已找到</value></data>
+  <data name="NotFound" xml:space="preserve"><value>未找到</value></data>
   <data name="AccessibleGlobally" xml:space="preserve"><value>可从任何终端访问</value></data>
   <data name="OnlyInInstallDir" xml:space="preserve"><value>仅在安装目录中可用</value></data>
   <data name="EverythingGood" xml:space="preserve"><value>一切正常！ADB 和 Fastboot 可以使用了。</value></data>
@@ -166,9 +166,17 @@
   <data name="RunInstallHint" xml:space="preserve"><value>运行 [bold]adb-installer install[/] 安装 ADB。</value></data>
   <data name="NoVersionApi" xml:space="preserve"><value>Google 未提供版本 API — 将下载并安装最新版本。</value></data>
   <data name="ConfirmUpdate" xml:space="preserve"><value>下载并安装最新的 Platform Tools？</value></data>
-  <data name="UpdateSuccessful" xml:space="preserve"><value>✓ 更新成功</value></data>
+  <data name="UpdateSuccessful" xml:space="preserve"><value>更新成功</value></data>
   <data name="PreviousVersion" xml:space="preserve"><value>之前：</value></data>
   <data name="UpdatedVersion" xml:space="preserve"><value>已更新：</value></data>
+
+  <!-- Robustness -->
+  <data name="InsufficientDiskSpace" xml:space="preserve"><value>磁盘空间不足。至少需要 100 MB。</value></data>
+  <data name="InvalidPathChars" xml:space="preserve"><value>路径包含无效字符。</value></data>
+  <data name="DirectoryNotWritable" xml:space="preserve"><value>无法写入指定目录。请检查权限。</value></data>
+  <data name="OperationCancelled" xml:space="preserve"><value>操作已取消。</value></data>
+  <data name="OperationTimedOut" xml:space="preserve"><value>操作超时。请检查网络连接并重试。</value></data>
+  <data name="DiskSpaceCheck" xml:space="preserve"><value>正在检查可用磁盘空间...</value></data>
 
   <!-- Command headers -->
   <data name="VerifyHeader" xml:space="preserve"><value>ADB 验证</value></data>

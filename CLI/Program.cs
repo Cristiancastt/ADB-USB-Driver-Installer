@@ -8,6 +8,11 @@ using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.Reflection;
+using System.Text;
+
+// Ensure UTF-8 so Unicode symbols (✓ ✗ —) render correctly on all terminals
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 
 // Initialize localization (auto-detects system language)
 _ = new Localizer();
@@ -57,12 +62,12 @@ catch (Exception ex)
 {
     var logPath = CrashLogger.WriteLog(ex, string.Join(' ', args));
     AnsiConsole.WriteLine();
-    AnsiConsole.Write(new Panel(new Markup($"[red]{Markup.Escape(ex.Message)}[/]"))
-        .Header("[red bold] Fatal Error [/]")
+    AnsiConsole.Write(new Panel(new Markup($"[{Theme.Red}]{Markup.Escape(ex.Message)}[/]"))
+        .Header($"[{Theme.Red} bold] Fatal Error [/]")
         .Border(BoxBorder.Rounded)
-        .BorderColor(Color.Red)
+        .BorderColor(Theme.RedColor)
         .Padding(1, 0)
         .Expand());
-    AnsiConsole.MarkupLine($"  [dim]Log: {Markup.Escape(logPath)}[/]");
+    AnsiConsole.MarkupLine($"  [{Theme.Dim}]Log: {Markup.Escape(logPath)}[/]");
     return 1;
 }
